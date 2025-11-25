@@ -4,412 +4,347 @@
       "id": 1,
       "question_principale": "Quels sont vos frais pour les transferts ?",
       "variations": [
-        "Quels sont vos frais ?",
         "Combien coûte un transfert ?",
+        "Quels sont vos tarifs ?",
         "Quels frais appliquez-vous ?",
-        "Y a-t-il des frais pour envoyer de l'argent ?",
-        "Tarifs des transferts"
+        "C'est combien les frais ?",
+        "Tarification des transferts",
+        "Frais de transaction"
       ],
-      "reponse": "Nos frais sont transparents et adaptés au marché burkinabé :\n- Transferts nationaux : 1% (min. 500 F CFA)\n- Transferts UEMOA : 1.5% (min. 750 F CFA)\n- Transferts internationaux hors UEMOA : 2% (min. 1000 F CFA)\n- Transferts mobile money : 1% (min. 250 F CFA)\n\nLes frais sont affichés clairement avant chaque transaction.",
-      "categorie": "Frais et Tarifs",
-      "sous_categorie": "Frais de transfert",
-      "mots_cles": ["frais", "tarifs", "coût", "transfert", "CFA", "UEMOA", "frais mobile money"],
-      "niveau_complexite": 1,
-      "questions_connexes": [2, 3, 4],
-      "statistiques_interaction": {
-        "likes": 0,
-        "dislikes": 0,
-        "suggestions_utilisateurs": [],
-        "nombre_vues": 0,
-        "note_moyenne": 0,
-        "date_creation": "2024-01-15",
-        "date_derniere_modification": "2024-01-15",
-        "est_faq": true,
-        "langue": "fr"
-      },
-      "metadonnees": {
-        "auteur": "support",
-        "produit_concerne": ["transfert", "mobile money"],
-        "public_cible": ["particulier", "professionnel"],
-        "pays_cibles": ["BF", "CI", "ML", "SN", "NE", "TG"],
-        "devise": "XOF",
-        "region": "Afrique de l'Ouest"
-      }
+      "reponse": "**💰 Frais ZamaPay - Transparence Totale**\n\n## Transferts Nationaux (Burkina Faso)\n- **1%** du montant (minimum 500 F CFA)\n- Exemple : 50,000 F CFA → 500 F CFA de frais\n\n## Transferts UEMOA (Côte d'Ivoire, Mali, Sénégal...)\n- **1.5%** du montant (minimum 750 F CFA)\n- Exemple : 100,000 F CFA → 1,500 F CFA de frais\n\n## Mobile Money (Orange Money, Moov Money)\n- **1%** du montant (minimum 250 F CFA)\n- Transfert instantané\n\n💡 **Aucun frais caché** - Tout est visible avant validation !",
+      "categorie": "frais",
+      "mots_cles": [
+        "frais",
+        "tarifs",
+        "coût",
+        "prix",
+        "transfert"
+      ],
+      "complexite": "faible",
+      "questions_connexes": [
+        2,
+        3,
+        4
+      ]
     },
     {
       "id": 2,
-      "question_principale": "Comment envoyer de l'argent vers un compte mobile money ?",
+      "question_principale": "Quel est le délai pour un transfert ?",
       "variations": [
-        "Envoyer argent mobile money",
-        "Transfert vers Orange Money",
-        "Transfert vers Moov Money",
-        "Comment envoyer sur mobile money ?"
+        "Combien de temps prend un transfert ?",
+        "Quand l'argent arrive ?",
+        "Délai de traitement",
+        "Transfert rapide ?",
+        "Temps d'attente",
+        "Rapidité de transfert"
       ],
-      "reponse": "Pour envoyer de l'argent vers un compte mobile money (Orange Money, Moov Money) :\n\n1. Connectez-vous à votre compte\n2. Sélectionnez 'Transfert vers mobile money'\n3. Choisissez l'opérateur (Orange ou Moov)\n4. Entrez le numéro de téléphone du bénéficiaire\n5. Saisissez le montant en F CFA\n6. Confirmez la transaction\n\nLe transfert est instantané et les frais sont de 1% (minimum 250 F CFA).",
-      "categorie": "Transferts",
-      "sous_categorie": "Mobile Money",
-      "mots_cles": ["mobile money", "orange money", "moov money", "transfert instantané", "numéro téléphone"],
-      "niveau_complexite": 1,
-      "questions_connexes": [1, 5],
-      "statistiques_interaction": {
-        "likes": 0,
-        "dislikes": 0,
-        "suggestions_utilisateurs": [],
-        "nombre_vues": 0,
-        "note_moyenne": 0,
-        "date_creation": "2024-01-15",
-        "date_derniere_modification": "2024-01-15",
-        "est_faq": true,
-        "langue": "fr"
-      },
-      "metadonnees": {
-        "auteur": "support",
-        "produit_concerne": ["mobile money"],
-        "public_cible": ["particulier"],
-        "pays_cibles": ["BF"],
-        "operateurs_supportes": ["Orange Money", "Moov Money"],
-        "devise": "XOF"
-      }
+      "reponse": "**⏱️ Délais de Traitement ZamaPay**\n\n## Transferts Standards\n- **Burkina Faso** : 2 heures maximum\n- **UEMOA** : 2-4 heures\n- **Mobile Money** : Instantané\n\n## Transferts Express (+500 F CFA)\n- **15 minutes** pour toutes destinations UEMOA\n\n🔄 **Suivi en temps réel** dans l'application !\n📱 **Notifications** à chaque étape",
+      "categorie": "delais",
+      "mots_cles": [
+        "délai",
+        "temps",
+        "rapidité",
+        "transfert",
+        "attente"
+      ],
+      "complexite": "faible",
+      "questions_connexes": [
+        1,
+        3,
+        5
+      ]
     },
     {
       "id": 3,
-      "question_principale": "Quels sont les plafonds de transfert pour le Burkina Faso ?",
+      "question_principale": "Comment vérifier mon compte ?",
       "variations": [
-        "Limite de transfert",
-        "Plafond d'envoi d'argent",
-        "Montant maximum transfert",
-        "Quelle somme maximale je peux envoyer ?"
+        "Comment valider mon compte ?",
+        "Processus de vérification",
+        "Documents requis pour vérification",
+        "Vérification d'identité",
+        "KYC ZamaPay",
+        "Authentification compte"
       ],
-      "reponse": "Nos plafonds de transfert pour le Burkina Faso sont :\n\n**Pour les particuliers :**\n- Transfert journalier : 500 000 F CFA\n- Transfert mensuel : 5 000 000 F CFA\n\n**Pour les professionnels :**\n- Transfert journalier : 2 000 000 F CFA\n- Transfert mensuel : 20 000 000 F CFA\n\nCes limites peuvent être augmentées après vérification complète de votre compte.",
-      "categorie": "Limites et Plafonds",
-      "sous_categorie": "Plafonds de transfert",
-      "mots_cles": ["plafond", "limite", "montant maximum", "transfert journalier", "transfert mensuel"],
-      "niveau_complexite": 1,
-      "questions_connexes": [6, 7],
-      "statistiques_interaction": {
-        "likes": 0,
-        "dislikes": 0,
-        "suggestions_utilisateurs": [],
-        "nombre_vues": 0,
-        "note_moyenne": 0,
-        "date_creation": "2024-01-15",
-        "date_derniere_modification": "2024-01-15",
-        "est_faq": true,
-        "langue": "fr"
-      },
-      "metadonnees": {
-        "auteur": "support",
-        "produit_concerne": ["transfert", "compte"],
-        "public_cible": ["particulier", "professionnel"],
-        "pays_cibles": ["BF"],
-        "devise": "XOF",
-        "reglementation": "BCEAO"
-      }
+      "reponse": "**✅ Vérification de Compte ZamaPay**\n\n## Étapes de Vérification :\n1. **Photo d'identité** (CNIB, Passeport, Permis de conduire)\n2. **Selfie avec pièce d'identité**\n3. **Justificatif de domicile** (facture récente)\n\n## Délai de Traitement :\n- **Validation automatique** : 2-4 heures\n- **Validation manuelle** : 24 heures maximum\n\n📱 **Effectuez la vérification directement dans l'application !**",
+      "categorie": "compte",
+      "mots_cles": [
+        "vérification",
+        "compte",
+        "documents",
+        "identité",
+        "KYC"
+      ],
+      "complexite": "moyenne",
+      "questions_connexes": [
+        1,
+        4,
+        6
+      ]
     },
     {
       "id": 4,
-      "question_principale": "Comment ouvrir un compte ?",
+      "question_principale": "Mes données sont-elles sécurisées ?",
       "variations": [
-        "Créer un compte",
-        "Inscription",
-        "Débuter avec votre service",
-        "Ouvrir un compte professionnel"
+        "Comment protégez-vous mes données ?",
+        "Sécurité des informations",
+        "Protection des données personnelles",
+        "Vos mesures de sécurité",
+        "Cryptage des données",
+        "Confidentialité informations"
       ],
-      "reponse": "Pour ouvrir un compte, vous avez besoin :\n\n**Documents requis :**\n- Carte nationale d'identité ou passeport\n- Justificatif de domicile de moins de 3 mois\n- Photo d'identité récente\n\n**Pour les professionnels :**\n- Registre de commerce\n- NIF (Numéro d'Identification Fiscale)\n- Statuts de l'entreprise\n\nLe processus est entièrement numérique et prend moins de 24 heures.",
-      "categorie": "Compte",
-      "sous_categorie": "Ouverture de compte",
-      "mots_cles": ["ouvrir compte", "inscription", "documents", "carte identité", "professionnel"],
-      "niveau_complexite": 2,
-      "questions_connexes": [8, 9],
-      "statistiques_interaction": {
-        "likes": 0,
-        "dislikes": 0,
-        "suggestions_utilisateurs": [],
-        "nombre_vues": 0,
-        "note_moyenne": 0,
-        "date_creation": "2024-01-15",
-        "date_derniere_modification": "2024-01-15",
-        "est_faq": true,
-        "langue": "fr"
-      },
-      "metadonnees": {
-        "auteur": "support",
-        "produit_concerne": ["compte"],
-        "public_cible": ["particulier", "professionnel"],
-        "pays_cibles": ["BF", "CI", "ML", "SN"],
-        "documents_acceptes": ["CNI", "Passeport", "Permis conduire"]
-      }
+      "reponse": "**🔒 Sécurité des Données ZamaPay**\n\n## Nos Engagements :\n- **Cryptage AES-256** pour toutes les données\n- **Conformité RGPD** et réglementations BCEAO\n- **Serveurs sécurisés** localisés au Burkina Faso\n- **Audits de sécurité** réguliers\n\n## Votre Sécurité :\n- **Authentification à deux facteurs**\n- **Notifications en temps réel**\n- **Contrôle d'activité** dans l'application\n\n🛡️ **Vos données sont 100% protégées !**",
+      "categorie": "securite",
+      "mots_cles": [
+        "sécurité",
+        "données",
+        "protection",
+        "cryptage",
+        "confidentialité"
+      ],
+      "complexite": "moyenne",
+      "questions_connexes": [
+        5,
+        7,
+        8
+      ]
     },
     {
       "id": 5,
-      "question_principale": "Quel est le délai pour un transfert vers la Côte d'Ivoire ?",
+      "question_principale": "Quelles sont les limites de transfert ?",
       "variations": [
-        "Délai transfert Côte d'Ivoire",
-        "Temps transfert CI",
-        "Quand arrive l'argent en Côte d'Ivoire ?",
-        "Transfert UEMOA délai"
+        "Plafonds de transfert",
+        "Limites maximales",
+        "Montants autorisés",
+        "Restrictions de transfert",
+        "Seuils ZamaPay",
+        "Maximum par transaction"
       ],
-      "reponse": "Les transferts vers la Côte d'Ivoire dans l'espace UEMOA sont très rapides :\n\n- **Transfert standard** : 2 heures maximum\n- **Transfert express** : 15 minutes (frais supplémentaires de 500 F CFA)\n- **Transfert mobile money** : Instantané\n\nVous recevrez une notification SMS à chaque étape du transfert.",
-      "categorie": "Délais",
-      "sous_categorie": "Transferts UEMOA",
-      "mots_cles": ["délai", "transfert", "Côte d'Ivoire", "UEMOA", "instantané", "rapide"],
-      "niveau_complexite": 1,
-      "questions_connexes": [1, 10],
-      "statistiques_interaction": {
-        "likes": 0,
-        "dislikes": 0,
-        "suggestions_utilisateurs": [],
-        "nombre_vues": 0,
-        "note_moyenne": 0,
-        "date_creation": "2024-01-15",
-        "date_derniere_modification": "2024-01-15",
-        "est_faq": true,
-        "langue": "fr"
-      },
-      "metadonnees": {
-        "auteur": "support",
-        "produit_concerne": ["transfert"],
-        "public_cible": ["particulier", "professionnel"],
-        "pays_cibles": ["BF", "CI"],
-        "devise": "XOF",
-        "reseau": "UEMOA"
-      }
+      "reponse": "**📊 Limites de Transfert ZamaPay**\n\n## Compte Standard :\n- **Transfert journalier** : 500,000 F CFA\n- **Transfert mensuel** : 5,000,000 F CFA\n- **Transaction unique** : 250,000 F CFA\n\n## Compte Vérifié :\n- **Transfert journalier** : 2,000,000 F CFA\n- **Transfert mensuel** : 10,000,000 F CFA\n- **Transaction unique** : 1,000,000 F CFA\n\n🔓 **Augmentez vos limites en complétant votre profil !**",
+      "categorie": "limites",
+      "mots_cles": [
+        "limites",
+        "plafonds",
+        "transfert",
+        "montants",
+        "maximum"
+      ],
+      "complexite": "faible",
+      "questions_connexes": [
+        1,
+        2,
+        6
+      ]
     },
     {
       "id": 6,
-      "question_principale": "Comment augmenter mes limites de transfert ?",
+      "question_principale": "Que faire en cas de fraude ?",
       "variations": [
-        "Augmenter plafond",
-        "Limite trop basse",
-        "Comment envoyer plus d'argent ?",
-        "Vérification compte pour plus de limites"
+        "J'ai été victime de fraude",
+        "Transaction non autorisée",
+        "Problème de sécurité",
+        "Signalement fraude",
+        "Compte compromis",
+        "Arnaque financière"
       ],
-      "reponse": "Pour augmenter vos limites de transfert, vous devez compléter la vérification de votre compte :\n\n**Étape 1 :** Vérification d'identité\n- Photo de votre CNI recto-verso\n- Selfie avec votre pièce d'identité\n\n**Étape 2 :** Vérification de revenus\n- Bulletin de salaire\n- Relevé bancaire\n- Attestation de travail\n\n**Étape 3 :** Visioconférence avec un conseiller\n\nAprès vérification, vos limites peuvent atteindre 10 000 000 F CFA mensuels.",
-      "categorie": "Limites et Plafonds",
-      "sous_categorie": "Augmentation limites",
-      "mots_cles": ["augmenter limite", "vérification compte", "plafond plus élevé", "documents"],
-      "niveau_complexite": 2,
-      "questions_connexes": [3, 8],
-      "statistiques_interaction": {
-        "likes": 0,
-        "dislikes": 0,
-        "suggestions_utilisateurs": [],
-        "nombre_vues": 0,
-        "note_moyenne": 0,
-        "date_creation": "2024-01-15",
-        "date_derniere_modification": "2024-01-15",
-        "est_faq": true,
-        "langue": "fr"
-      },
-      "metadonnees": {
-        "auteur": "support",
-        "produit_concerne": ["compte", "transfert"],
-        "public_cible": ["particulier", "professionnel"],
-        "pays_cibles": ["BF"],
-        "devise": "XOF"
-      }
+      "reponse": "**🚨 Procédure Anti-Fraude ZamaPay**\n\n## Actions Immédiates :\n1. **Contactez-nous URGENCE** : 70 123 456\n2. **Geler votre compte** via l'application\n3. **Changer votre mot de passe**\n4. **Vérifier les transactions récentes**\n\n## Notre Intervention :\n- **Investigation immédiate** sous 1 heure\n- **Remboursement** sous 48h si fraude avérée\n- **Nouvelle sécurité** mise en place\n\n📞 **Notre équipe sécurité est disponible 24h/24 !**",
+      "categorie": "securite",
+      "mots_cles": [
+        "fraude",
+        "sécurité",
+        "urgence",
+        "signalement",
+        "arnaque"
+      ],
+      "complexite": "élevée",
+      "questions_connexes": [
+        4,
+        7
+      ]
     },
     {
       "id": 7,
-      "question_principale": "Quelles devises acceptez-vous pour les dépôts ?",
+      "question_principale": "Comment contacter le support ?",
       "variations": [
-        "Devises acceptées",
-        "Puis-je déposer des euros ?",
-        "Acceptez-vous les dollars ?",
-        "Dépôt en devise étrangère"
+        "Service client ZamaPay",
+        "Support technique",
+        "Contact assistance",
+        "Service après-vente",
+        "Aide en ligne",
+        "Problème avec l'application"
       ],
-      "reponse": "Nous acceptons les devises suivantes pour les dépôts :\n\n**Devises principales :**\n- F CFA (XOF) - Devise par défaut\n- Euro (EUR) - Conversion automatique\n- Dollar US (USD) - Conversion automatique\n\n**Taux de change :**\n- Les taux sont mis à jour quotidiennement\n- Aucun frais supplémentaire pour la conversion\n- Le montant en F CFA est crédité sur votre compte\n\nPour les autres devises, contactez notre service client.",
-      "categorie": "Devises",
-      "sous_categorie": "Devises acceptées",
-      "mots_cles": ["devises", "euro", "dollar", "taux change", "conversion", "dépôt"],
-      "niveau_complexite": 2,
-      "questions_connexes": [11, 12],
-      "statistiques_interaction": {
-        "likes": 0,
-        "dislikes": 0,
-        "suggestions_utilisateurs": [],
-        "nombre_vues": 0,
-        "note_moyenne": 0,
-        "date_creation": "2024-01-15",
-        "date_derniere_modification": "2024-01-15",
-        "est_faq": true,
-        "langue": "fr"
-      },
-      "metadonnees": {
-        "auteur": "support",
-        "produit_concerne": ["compte", "dépôt"],
-        "public_cible": ["particulier", "professionnel"],
-        "pays_cibles": ["BF"],
-        "devises_acceptees": ["XOF", "EUR", "USD"]
-      }
+      "reponse": "**📞 Support Client ZamaPay**\n\n## Contacts Disponibles :\n- **Téléphone** : 70 123 456 (24h/24)\n- **Email** : support@zamapay.com\n- **Chat** : Application ZamaPay\n- **WhatsApp** : +226 70 123 456\n\n## Horaires :\n- **Lundi-Vendredi** : 7h-22h\n- **Samedi-Dimanche** : 8h-20h\n\n🕒 **Réponse garantie en moins de 30 minutes !**",
+      "categorie": "support",
+      "mots_cles": [
+        "support",
+        "contact",
+        "assistance",
+        "service client",
+        "aide"
+      ],
+      "complexite": "faible",
+      "questions_connexes": [
+        4,
+        6,
+        8
+      ]
     },
     {
       "id": 8,
-      "question_principale": "Problème de vérification d'identité",
+      "question_principale": "Comment créer un compte ZamaPay ?",
       "variations": [
-        "Vérification échouée",
-        "Documents refusés",
-        "Problème CNI",
-        "Vérification identité bloquée"
+        "Inscription ZamaPay",
+        "Ouvrir un compte",
+        "Devenir client ZamaPay",
+        "Processus inscription",
+        "Création compte transfert"
       ],
-      "reponse": "Si votre vérification d'identité rencontre des problèmes :\n\n**Solutions courantes :**\n- Assurez que la photo de votre CNI soit nette et sans reflet\n- Vérifiez que tous les bords du document sont visibles\n- Prenez la photo dans un endroit bien éclairé\n- Vérifiez que votre document n'est pas expiré\n\n**Si le problème persiste :**\n1. Contactez notre support au 70 123 456 (coût appel local)\n2. Ou écrivez à support@example.com\n3. Visitez notre agence à Ouagadougou, zone du bois\n\nNous traitons les réclamations sous 24 heures.",
-      "categorie": "Support",
-      "sous_categorie": "Problèmes vérification",
-      "mots_cles": ["vérification", "CNI", "documents refusés", "support", "problème"],
-      "niveau_complexite": 2,
-      "questions_connexes": [4, 13],
-      "statistiques_interaction": {
-        "likes": 0,
-        "dislikes": 0,
-        "suggestions_utilisateurs": [],
-        "nombre_vues": 0,
-        "note_moyenne": 0,
-        "date_creation": "2024-01-15",
-        "date_derniere_modification": "2024-01-15",
-        "est_faq": true,
-        "langue": "fr"
-      },
-      "metadonnees": {
-        "auteur": "support",
-        "produit_concerne": ["compte"],
-        "public_cible": ["particulier", "professionnel"],
-        "pays_cibles": ["BF"],
-        "urgence": "moyenne"
-      }
-    }
-  ],
-  "suggestions_utilisateurs": [
-    {
-      "id_suggestion": 1,
-      "id_question": 1,
-      "suggestion_texte": "Pourriez-vous ajouter des exemples concrets de calcul avec des montants en F CFA ?",
-      "date_suggestion": "2024-01-20",
-      "utilisateur": "user_ouaga123",
-      "statut": "en_attente",
-      "votes_positifs": 5,
-      "votes_negatifs": 0,
-      "categorie_suggestion": "amelioration_reponse"
-    }
-  ],
-  "feedback_utilisateurs": [
-    {
-      "id_feedback": 1,
-      "id_question": 1,
-      "type_feedback": "like",
-      "utilisateur": "user_bobo456",
-      "date_feedback": "2024-01-18",
-      "commentaire": "Très clair, merci pour la transparence sur les frais !",
-      "note": 5
-    }
-  ],
-  "categories_principales": [
-    {
-      "id_categorie": 1,
-      "nom_categorie": "Frais et Tarifs",
-      "description": "Informations sur les frais, commissions et tarifs appliqués",
-      "sous_categories": [
-        "Frais de transfert",
-        "Frais de compte", 
-        "Frais de change",
-        "Frais mobile money"
+      "reponse": "**📱 Création de Compte ZamaPay**\n\n## Étapes d'Inscription :\n1. **Téléchargez l'application** sur Play Store/App Store\n2. **Renseignez vos informations** personnelles\n3. **Validez votre email** et numéro de téléphone\n4. **Déposez vos documents** pour vérification\n\n## Documents Requis :\n- **Pièce d'identité** valide\n- **Justificatif de domicile**\n- **Selfie** avec pièce d'identité\n\n⏱️ **Compte actif en moins de 24h !**",
+      "categorie": "compte",
+      "mots_cles": [
+        "compte",
+        "inscription",
+        "création",
+        "devenir client",
+        "ouvrir"
       ],
-      "nombre_questions": 45,
-      "icone": "💰"
+      "complexite": "faible",
+      "questions_connexes": [
+        3,
+        7,
+        9
+      ]
     },
     {
-      "id_categorie": 2,
-      "nom_categorie": "Transferts",
-      "description": "Questions relatives aux envois et réceptions d'argent",
-      "sous_categories": [
-        "Transferts nationaux",
-        "Transferts UEMOA",
+      "id": 9,
+      "question_principale": "Quels pays sont couverts par ZamaPay ?",
+      "variations": [
+        "Destinations de transfert",
+        "Pays disponibles",
+        "Zone géographique ZamaPay",
         "Transferts internationaux",
-        "Mobile Money",
-        "Transferts urgents"
+        "Pays UEMOA supportés"
       ],
-      "nombre_questions": 78,
-      "icone": "↔️"
+      "reponse": "**🌍 Couverture Géographique ZamaPay**\n\n## Pays UEMOA Supportés :\n- 🇧🇫 **Burkina Faso** (Siège)\n- 🇨🇮 **Côte d'Ivoire**\n- 🇸🇳 **Sénégal**\n- 🇲🇱 **Mali**\n- 🇳🇪 **Niger**\n- 🇹🇬 **Togo**\n- 🇧🇯 **Bénin**\n- 🇬🇼 **Guinée-Bissau**\n\n## Prochaines Destinations :\n- 🇬🇭 **Ghana** (2024)\n- 🇳🇬 **Nigeria** (2024)\n- 🇨🇲 **Cameroun** (2025)\n\n🚀 **Nous étendons notre couverture chaque année !**",
+      "categorie": "geographie",
+      "mots_cles": [
+        "pays",
+        "destinations",
+        "couverture",
+        "international",
+        "UEMOA"
+      ],
+      "complexite": "faible",
+      "questions_connexes": [
+        1,
+        2,
+        10
+      ]
     },
     {
-      "id_categorie": 3,
-      "nom_categorie": "Compte",
-      "description": "Gestion et fonctionnement du compte",
-      "sous_categories": [
-        "Ouverture de compte",
-        "Fermeture de compte",
-        "Vérification compte",
-        "Profil utilisateur"
+      "id": 10,
+      "question_principale": "Comment annuler un transfert ?",
+      "variations": [
+        "Annulation transaction",
+        "Arrêter un transfert",
+        "Récupérer argent transfert",
+        "Transfert envoyé par erreur",
+        "Modifier destinataire"
       ],
-      "nombre_questions": 34,
-      "icone": "👤"
+      "reponse": "**🔄 Annulation de Transfert ZamaPay**\n\n## Conditions d'Annulation :\n- **Transfert non traité** : Annulation immédiate\n- **Transfert en cours** : Contact rapide support\n- **Transfert terminé** : Remboursement sous conditions\n\n## Procédure :\n1. **Allez dans Historique** → **Transaction**\n2. **Cliquez Annuler** si disponible\n3. **Contactez le support** au 70 123 456\n\n⏰ **Agissez rapidement pour maximiser les chances !**",
+      "categorie": "transfert",
+      "mots_cles": [
+        "annulation",
+        "annuler",
+        "transfert",
+        "erreur",
+        "récupérer"
+      ],
+      "complexite": "moyenne",
+      "questions_connexes": [
+        1,
+        2,
+        7
+      ]
     },
     {
-      "id_categorie": 4,
-      "nom_categorie": "Sécurité",
-      "description": "Sécurité du compte et protection des transactions",
-      "sous_categories": [
-        "Mot de passe",
-        "Vérification en deux étapes",
-        "Transactions suspectes",
-        "Protection compte"
+      "id": 11,
+      "question_principale": "Qu'est-ce que le programme fidélité ZamaPay ?",
+      "variations": [
+        "Avantages clients fidèles",
+        "Points de fidélité",
+        "Programme récompenses",
+        "Cashback ZamaPay",
+        "Avantages premium"
       ],
-      "nombre_questions": 23,
-      "icone": "🔒"
+      "reponse": "**🎁 Programme Fidélité ZamaPay**\n\n## Avantages :\n- **1 point** = 1 F CFA de transfert\n- **100 points** = Réduction de 100 F CFA\n- **Cashback** : 0.5% sur tous vos transferts\n- **Frais réduits** pour les clients premium\n\n## Niveaux :\n- **Bronze** : 0-10,000 points\n- **Argent** : 10,001-50,000 points  \n- **Or** : 50,001-200,000 points\n- **Platine** : 200,001+ points\n\n💎 **Devenez Platinum et bénéficiez de frais à 0% !**",
+      "categorie": "fidelite",
+      "mots_cles": [
+        "fidélité",
+        "points",
+        "récompenses",
+        "cashback",
+        "avantages"
+      ],
+      "complexite": "moyenne",
+      "questions_connexes": [
+        1,
+        5,
+        12
+      ]
     },
     {
-      "id_categorie": 5,
-      "nom_categorie": "Support Client",
-      "description": "Contact et assistance clientèle",
-      "sous_categories": [
-        "Contact support",
-        "Réclamation",
-        "Problèmes techniques",
-        "Agences physiques"
+      "id": 12,
+      "question_principale": "Comment fonctionne le parrainage ZamaPay ?",
+      "variations": [
+        "Programme de parrainage",
+        "Inviter des amis",
+        "Récompenses parrainage",
+        "Code de parrainage",
+        "Gagner avec ZamaPay"
       ],
-      "nombre_questions": 29,
-      "icone": "📞"
+      "reponse": "**👥 Programme de Parrainage ZamaPay**\n\n## Comment ça marche :\n1. **Partagez votre code** : ZAMA-12345\n2. **Vos amis s'inscrivent** avec votre code\n3. **Ils effectuent** leur premier transfert\n4. **Vous gagnez** 500 F CFA chacun !\n\n## Avantages :\n- **Parrain** : 500 F CFA par ami inscrit\n- **Filleul** : 250 F CFA sur premier transfert\n- **Illimité** : Pas de limite de parrainage\n\n💰 **Gagnez jusqu'à 50,000 F CFA par mois !**",
+      "categorie": "parrainage",
+      "mots_cles": [
+        "parrainage",
+        "inviter",
+        "amis",
+        "code",
+        "récompenses"
+      ],
+      "complexite": "faible",
+      "questions_connexes": [
+        8,
+        11
+      ]
     }
   ],
-  "statistiques_globales": {
-    "total_questions": 209,
-    "total_likes": 1245,
-    "total_dislikes": 89,
-    "taux_satisfaction": 93.3,
-    "questions_populaires": [1, 5, 12, 45, 78],
-    "langues_supportees": ["fr", "en", "dioula", "moore"],
-    "date_mise_a_jour": "2024-01-20"
-  },
-  "template_questions": {
-    "frais_transfert": {
-      "structure": "Quels sont les frais pour [type_transfert] [montant] [destination] ?",
-      "exemples": [
-        "Quels sont les frais pour un transfert de 50 000 F CFA vers le Mali ?",
-        "Quels sont les frais pour un transfert mobile money de 25 000 F CFA ?"
-      ]
-    },
-    "delais_transfert": {
-      "structure": "Combien de temps pour [type_transfert] [destination] ?",
-      "exemples": [
-        "Combien de temps pour un transfert vers le Sénégal ?",
-        "Délai pour transfert express vers la Côte d'Ivoire ?"
-      ]
+  "metadata": {
+    "total_questions": 12,
+    "version": "3.0",
+    "description": "Base de connaissances ZamaPay étendue - 12 Q&A complètes",
+    "categories": [
+      "frais",
+      "delais",
+      "compte",
+      "securite",
+      "limites",
+      "support",
+      "geographie",
+      "transfert",
+      "fidelite",
+      "parrainage"
+    ],
+    "date_creation": "2024",
+    "statistiques": {
+      "questions_frequentes": [
+        1,
+        2,
+        3,
+        4,
+        7
+      ],
+      "complexite_moyenne": "faible",
+      "couverture_thematique": "95%"
     }
-  },
-  "pays_couverts": [
-    {
-      "code": "BF",
-      "nom": "Burkina Faso",
-      "devise": "XOF",
-      "operateurs_mobile_money": ["Orange Money", "Moov Money"],
-      "langues": ["fr", "moore", "dioula"]
-    },
-    {
-      "code": "CI", 
-      "nom": "Côte d'Ivoire",
-      "devise": "XOF",
-      "operateurs_mobile_money": ["Orange Money", "MTN Money"],
-      "langues": ["fr", "dioula"]
-    }
-  ]
+  }
 }
-
