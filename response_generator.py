@@ -34,7 +34,7 @@ class ResponseGenerator:
         self.kb_cache = {}  # Nouveau cache pour la base de connaissances
         
         # Configuration Gemini robuste
-        self.gemini_api_key = "VOTRE_CLE_API_GEMINI"
+        self.gemini_api_key = "AIzaSyD_LCuo-aeXD4kaXVl__R1JKMLdQm04kRw"
         self._setup_gemini()
         
         print("✅ ResponseGenerator initialisé avec succès")
@@ -774,4 +774,5 @@ if __name__ == "__main__":
         print(f"A: {response['response'][:100]}...")
         print(f"Confiance: {response['confidence']} | Source: {response['source']}")
         
+
 
