@@ -1,19 +1,20 @@
 #!/usr/bin/env python3
 """
-RESPONSE_GENERATOR - ZAMAPAY
-Générateur de réponses intelligentes avec RAG et Gemini
+RESPONSE_GENERATOR CORRIGÉ - ZAMAPAY
+Version optimisée avec corrections des bugs et améliorations des performances
 """
 
 import random
 import json
 import time
+import threading
 import google.generativeai as genai
 from web_searcher import WebSearcher
 
 class ResponseGenerator:
     def __init__(self, retrieval_system):
         """
-        Initialise le générateur de réponses
+        Initialise le générateur de réponses corrigé
         
         Args:
             retrieval_system: Système RAG pour la recherche de connaissances
@@ -23,19 +24,22 @@ class ResponseGenerator:
         self.conversation_memory = {}
         self.escalation_threshold = 0.4
         
-        # Cache pour optimiser les performances
+        # Cache optimisé pour les performances
         self.web_cache = {}
         self.cache_timeout = 3600  # 1 heure
+        self.kb_cache = {}  # Nouveau cache pour la base de connaissances
         
-        # Configuration Gemini
+        # Configuration Gemini robuste
         self.gemini_api_key = "AIzaSyBge8Q1B4g-rT5nIuhIb4Dc99BuIZXy7Ak"
         self._setup_gemini()
         
-        # Templates conversationnels
+        # Templates conversationnels améliorés
         self.conversation_templates = self._init_quality_templates()
+        
+        print("✅ ResponseGenerator initialisé avec succès")
 
     def _setup_gemini(self):
-        """Configure l'API Gemini avec gestion d'erreurs"""
+        """Configure l'API Gemini avec gestion d'erreurs robuste"""
         try:
             genai.configure(api_key=self.gemini_api_key)
             self.gemini_model = genai.GenerativeModel('gemini-2.5-flash')
@@ -45,44 +49,88 @@ class ResponseGenerator:
             self.gemini_model = None
 
     def generate_response(self, user_message, user_name=None):
-        """
-        Génère une réponse conversationnelle naturelle avec RAG
-        
-        Args:
-            user_message (str): Message de l'utilisateur
-            user_name (str, optional): Nom de l'utilisateur pour le contexte
-            
-        Returns:
-            dict: Réponse structurée avec métadonnées
-        """
+        """Génère une réponse avec détection prioritaire d'escalade"""
         print(f"💬 Conversation: '{user_message}'")
         
-        # 1. Analyse du contexte et de l'intention
-        conversation_context = self._get_conversation_context(user_name)
-        intent = self._analyze_intent(user_message)
+        # 🔥 NOUVEAU: Détection PRIORITAIRE d'escalade
+        escalation_intent = self._detect_escalation_intent(user_message)
+        if escalation_intent:
+            print("🚨 Détection d'escalade prioritaire - Passage direct au support")
+            return self._create_escalation_response()
         
-        # 2. Recherche RAG optimisée
-        rag_results = self._enhanced_rag_search(user_message, intent)
+        try:
+            # 1. Analyse du contexte et de l'intention
+            conversation_context = self._get_conversation_context(user_name)
+            intent = self._analyze_intent(user_message)
+            
+            # 2. Recherche RAG optimisée avec timeout
+            rag_results = self._enhanced_rag_search(user_message, intent)
+            
+            # 3. Fallback Gemini si nécessaire
+            if self._should_use_gemini_fallback(rag_results):
+                print("🔍 Aucune réponse trouvée, utilisation de Gemini...")
+                gemini_response = self._generate_with_gemini_fallback(user_message)
+                if gemini_response:
+                    return self._format_gemini_response(gemini_response)
+            
+            # 4. Génération de réponse adaptée à l'intention
+            response = self._generate_intent_based_response(user_message, rag_results, intent, conversation_context)
+            
+            # 5. Mise à jour du contexte conversationnel
+            self._update_conversation_memory(user_name, user_message, response)
+            
+            return response
+            
+        except Exception as e:
+            print(f"❌ Erreur critique dans generate_response: {e}")
+            return self._create_error_response()
+
+    def _detect_escalation_intent(self, user_message):
+        """Détecte les intentions d'escalade prioritaires"""
+        message_lower = user_message.lower()
         
-        # 3. Fallback Gemini si nécessaire
-        if self._should_use_gemini_fallback(rag_results):
-            print("🔍 Aucune réponse trouvée, utilisation de Gemini...")
-            gemini_response = self._generate_with_gemini_fallback(user_message)
-            if gemini_response:
-                return self._format_gemini_response(gemini_response)
+        # Mots-clés pour escalade immédiate
+        escalation_keywords = [
+            "parler à un humain", "conseiller humain", "agent réel", "vrai personne",
+            "support humain", "assistant humain", "parler à quelqu'un", "contact humain",
+            "je veux un humain", "pas un robot", "escalader", "urgence", "frustré",
+            "énervé", "mécontent", "insatisfait", "problème grave", "urgence"
+        ]
         
-        # 4. Génération de réponse adaptée à l'intention
-        response = self._generate_intent_based_response(user_message, rag_results, intent, conversation_context)
-        
-        # 5. Mise à jour du contexte conversationnel
-        self._update_conversation_memory(user_name, user_message, response)
-        
-        return response
+        return any(keyword in message_lower for keyword in escalation_keywords)
+
+    def _create_escalation_response(self):
+        """Crée une réponse d'escalade prioritaire"""
+        return {
+            'type': 'escalation',
+            'response': """**🚨 Support Humain - Priorité**
+
+    Je comprends que vous souhaitez parler à un conseiller humain. Voici nos contacts directs :
+
+    **📞 Contact Immédiat :**
+    • Téléphone : **70 123 456** (24h/24)
+    • WhatsApp : **+226 70 123 456**
+    • Email : support@zamapay.com
+
+    **🕒 Délai de réponse :**
+    - Téléphone : **Immédiat**
+    - WhatsApp : **Moins de 5 minutes**
+    - Email : **Moins de 30 minutes**
+
+    Notre équipe est là pour vous aider personnellement !""",
+            'confidence': 0.95,
+            'source': 'escalation_detection'
+        }
 
     def _should_use_gemini_fallback(self, rag_results):
-        """Détermine si on doit utiliser Gemini comme fallback"""
-        return (not rag_results["knowledge_base"] and 
-                not rag_results["web_search"] and 
+        """Détermine si on doit utiliser Gemini comme fallback - CORRIGÉ"""
+        has_kb_results = rag_results["knowledge_base"] and len(rag_results["knowledge_base"]) > 0
+        has_web_results = rag_results["web_search"] and len(rag_results["web_search"]) > 0
+        has_gemini_analysis = rag_results["gemini_analysis"] is not None
+        
+        return (not has_kb_results and 
+                not has_web_results and 
+                not has_gemini_analysis and
                 self.gemini_model)
 
     def _format_gemini_response(self, response_text):
@@ -94,16 +142,18 @@ class ResponseGenerator:
             'source': 'gemini_fallback'
         }
 
+    def _create_error_response(self):
+        """Crée une réponse d'erreur élégante"""
+        return {
+            'type': 'error',
+            'response': "🚨 Désolé, je rencontre un problème technique. Veuillez contacter notre support au 70 123 456 pour une assistance immédiate.",
+            'confidence': 0.0,
+            'source': 'error_handler'
+        }
+
     def _enhanced_rag_search(self, user_message, intent):
         """
-        Recherche RAG améliorée avec cache et multiples sources
-        
-        Args:
-            user_message (str): Question de l'utilisateur
-            intent (str): Intention détectée
-            
-        Returns:
-            dict: Résultats de recherche avec scores de confiance
+        Recherche RAG améliorée avec gestion d'erreurs et timeout - VERSION CORRIGÉE
         """
         results = {
             "knowledge_base": [],
@@ -112,107 +162,209 @@ class ResponseGenerator:
             "confidence": 0.0
         }
         
-        # Recherche dans la base de connaissances
-        self._search_knowledge_base(user_message, results)
-        
-        # Recherche web avec cache
-        self._search_web_with_cache(user_message, intent, results)
-        
-        # Analyse Gemini pour questions complexes
-        self._search_gemini_analysis(user_message, intent, results)
-        
+        try:
+            # 1. Recherche dans la base de connaissances avec cache
+            self._search_knowledge_base_optimized(user_message, results)
+            
+            # 2. Recherche web optimisée avec timeout (seulement si nécessaire)
+            if results["confidence"] < 0.5:  # Seuil plus élevé pour éviter les recherches inutiles
+                self._search_web_with_timeout(user_message, intent, results)
+            
+            # 3. Analyse Gemini pour questions complexes (seulement si nécessaire)
+            if (intent in ["complex_analysis", "problem_solving"] and 
+                self.gemini_model and 
+                results["confidence"] < 0.7):
+                self._search_gemini_analysis(user_message, results)
+                
+        except Exception as e:
+            print(f"⚠️ Erreur lors de la recherche RAG: {e}")
+            
         return results
 
-    def _search_knowledge_base(self, user_message, results):
-        """Recherche dans la base de connaissances"""
-        kb_results = self.retrieval_system.search(user_message)
-        if kb_results:
-            results["knowledge_base"] = kb_results
-            results["confidence"] = max(results["confidence"], kb_results[0]['score'])
+    def _search_knowledge_base_optimized(self, user_message, results):
+        """Recherche optimisée dans la base de connaissances avec cache"""
+        try:
+            # Vérifier le cache d'abord
+            cache_key = f"kb_{user_message.lower().strip()}"
+            if cache_key in self.kb_cache:
+                cached_data = self.kb_cache[cache_key]
+                if time.time() - cached_data['timestamp'] < self.cache_timeout:
+                    results["knowledge_base"] = cached_data['results']
+                    if results["knowledge_base"]:
+                        results["confidence"] = max(results["confidence"], results["knowledge_base"][0]['score'])
+                    return
+            
+            # Recherche réelle
+            kb_results = self.retrieval_system.search(user_message)
+            
+            # CORRECTION: Vérifier que kb_results est une liste valide
+            if kb_results and isinstance(kb_results, list) and len(kb_results) > 0:
+                # Filtrer seulement les résultats pertinents
+                relevant_results = []
+                for result in kb_results:
+                    # Vérifier la structure du résultat
+                    if isinstance(result, dict) and 'score' in result and 'qa_data' in result:
+                        if result['score'] > 0.3:  # Seuil minimum de pertinence
+                            relevant_results.append(result)
+                
+                if relevant_results:
+                    # Trier par score décroissant
+                    relevant_results.sort(key=lambda x: x['score'], reverse=True)
+                    results["knowledge_base"] = relevant_results[:3]  # Garder les 3 meilleurs
+                    results["confidence"] = max(results["confidence"], relevant_results[0]['score'])
+                    
+                    # Mettre en cache
+                    self.kb_cache[cache_key] = {
+                        'results': results["knowledge_base"],
+                        'timestamp': time.time()
+                    }
+                    
+        except Exception as e:
+            print(f"⚠️ Erreur recherche base connaissances: {e}")
 
-    def _search_web_with_cache(self, user_message, intent, results):
-        """Recherche web avec système de cache"""
+    def _search_web_with_timeout(self, user_message, intent, results):
+        """Recherche web avec timeout et gestion d'erreurs - VERSION CORRIGÉE"""
         cache_key = user_message.lower().strip()
         current_time = time.time()
         
-        # Vérifier le cache
+        # Vérifier le cache d'abord
         if (cache_key in self.web_cache and 
             current_time - self.web_cache[cache_key]['timestamp'] < self.cache_timeout):
             print("💾 Utilisation du cache web")
             results["web_search"] = self.web_cache[cache_key]['results']
             if results["web_search"]:
                 results["confidence"] = max(results["confidence"], 0.6)
-        else:
-            # Recherche web si nécessaire
-            if intent in ["complex_analysis", "comparison"] or results["confidence"] < 0.5:
+            return
+        
+        # Limiter la recherche web aux cas vraiment nécessaires
+        should_search_web = (
+            intent in ["complex_analysis", "comparison"] or 
+            results["confidence"] < 0.4  # Seuil plus strict
+        )
+        
+        if should_search_web:
+            print("🌐 Lancement recherche web optimisée...")
+            
+            web_results = []
+            search_completed = threading.Event()
+            search_error = None
+            
+            def search_thread():
+                nonlocal web_results, search_error
                 try:
-                    print("🌐 Recherche web pour:", user_message)
-                    web_results = self.web_searcher.search_web(user_message, num_results=2)
-                    results["web_search"] = web_results
-                    
-                    # Mettre en cache
+                    web_results = self.web_searcher.search_web(user_message, num_results=1)  # 1 résultat seulement
+                except Exception as e:
+                    search_error = e
+                finally:
+                    search_completed.set()
+            
+            # Lancer la recherche dans un thread séparé
+            thread = threading.Thread(target=search_thread)
+            thread.start()
+            
+            # Attendre avec timeout
+            search_completed.wait(timeout=3)  # Timeout de 3 secondes
+            
+            if search_error:
+                print(f"⚠️ Erreur recherche web: {search_error}")
+            elif not search_completed.is_set():
+                print("⏱️  Timeout recherche web - annulation")
+                thread.join(timeout=1)  # Donner 1 seconde supplémentaire pour cleanup
+            else:
+                results["web_search"] = web_results
+                if web_results:
+                    # Mettre en cache même les résultats partiels
                     self.web_cache[cache_key] = {
                         'results': web_results,
                         'timestamp': current_time
                     }
-                    
-                    if web_results:
-                        results["confidence"] = max(results["confidence"], 0.6)
-                except Exception as e:
-                    print(f"⚠️ Recherche web échouée: {e}")
+                    results["confidence"] = max(results["confidence"], 0.6)
 
-    def _search_gemini_analysis(self, user_message, intent, results):
-        """Analyse Gemini pour questions complexes"""
-        if intent in ["complex_analysis", "problem_solving"] and self.gemini_model:
-            try:
-                context = self._build_rag_context(results)
-                gemini_response = self._generate_with_gemini(user_message, context)
-                if gemini_response:
-                    results["gemini_analysis"] = gemini_response
-                    results["confidence"] = max(results["confidence"], 0.9)
-            except Exception as e:
-                print(f"⚠️ Analyse Gemini échouée: {e}")
+    def _search_gemini_analysis(self, user_message, results):
+        """Analyse Gemini pour questions complexes avec gestion d'erreurs"""
+        try:
+            context = self._build_rag_context(results)
+            gemini_response = self._generate_with_gemini(user_message, context)
+            if gemini_response:
+                results["gemini_analysis"] = gemini_response
+                results["confidence"] = max(results["confidence"], 0.8)
+        except Exception as e:
+            print(f"⚠️ Analyse Gemini échouée: {e}")
 
     def _generate_intent_based_response(self, user_message, rag_results, intent, context):
         """
-        Génère une réponse basée sur l'intention détectée
+        Génère une réponse basée sur l'intention détectée - VERSION CORRIGÉE
         """
-        response_strategies = {
-            "simple_fact": lambda: self._generate_simple_response(user_message, rag_results),
-            "complex_analysis": lambda: self._generate_analytical_response(user_message, rag_results, context),
-            "comparison": lambda: self._generate_comparison_response(user_message, rag_results),
-            "problem_solving": lambda: self._generate_solution_response(user_message, rag_results),
-            "general": lambda: self._generate_natural_response(user_message, rag_results)
-        }
-        
-        strategy = response_strategies.get(intent, response_strategies["general"])
-        return strategy()
+        try:
+            response_strategies = {
+                "simple_fact": lambda: self._generate_simple_response(user_message, rag_results),
+                "complex_analysis": lambda: self._generate_analytical_response(user_message, rag_results, context),
+                "comparison": lambda: self._generate_comparison_response(user_message, rag_results),
+                "problem_solving": lambda: self._generate_solution_response(user_message, rag_results),
+                "general": lambda: self._generate_natural_response(user_message, rag_results)
+            }
+            
+            strategy = response_strategies.get(intent, response_strategies["general"])
+            return strategy()
+        except Exception as e:
+            print(f"❌ Erreur dans la génération de réponse: {e}")
+            return self._generate_fallback_response(user_message)
 
-    # === MÉTHODES DE GÉNÉRATION DE RÉPONSES ===
+    # === MÉTHODES DE GÉNÉRATION DE RÉPONSES CORRIGÉES ===
 
     def _generate_natural_response(self, user_message, rag_results):
-        """Génère une réponse conversationnelle naturelle"""
-        if rag_results["gemini_analysis"]:
-            return self._create_response(rag_results["gemini_analysis"], 0.9, 'gemini')
-        elif rag_results["knowledge_base"] and rag_results["knowledge_base"][0]['score'] > 0.5:
-            best_match = rag_results["knowledge_base"][0]
-            response_text = self._format_conversational_kb_response(best_match['qa_data'])
-            return self._create_response(response_text, best_match['score'], 'knowledge_base')
-        else:
-            response_text = self._generate_improved_template_response(user_message)
-            return self._create_response(response_text, 0.7, 'template_improved')
+        """Génère une réponse conversationnelle naturelle - VERSION CORRIGÉE"""
+        try:
+            if rag_results["gemini_analysis"]:
+                return self._create_response(rag_results["gemini_analysis"], 0.9, 'gemini')
+            
+            elif (rag_results["knowledge_base"] and 
+                len(rag_results["knowledge_base"]) > 0 and 
+                rag_results["knowledge_base"][0]['score'] > 0.5):
+                
+                best_match = rag_results["knowledge_base"][0]
+                # Vérifier que qa_data existe et a la bonne structure
+                if 'qa_data' in best_match and isinstance(best_match['qa_data'], dict):
+                    response_text = self._format_conversational_kb_response(best_match['qa_data'])
+                    return self._create_response(response_text, best_match['score'], 'knowledge_base')
+                else:
+                    # Fallback si la structure est incorrecte
+                    response_text = self._generate_improved_template_response(user_message)
+                    return self._create_response(response_text, 0.6, 'template_fallback')
+            
+            else:
+                response_text = self._generate_improved_template_response(user_message)
+                return self._create_response(response_text, 0.7, 'template_improved')
+                
+        except Exception as e:
+            print(f"❌ Erreur dans _generate_natural_response: {e}")
+            return self._generate_fallback_response(user_message)
 
     def _generate_simple_response(self, user_message, rag_results):
-        """Génère une réponse simple et factuelle"""
-        if rag_results["gemini_analysis"]:
-            return self._create_response(rag_results["gemini_analysis"], 0.9, 'gemini')
-        elif rag_results["knowledge_base"] and rag_results["knowledge_base"][0]['score'] > 0.6:
-            best_match = rag_results["knowledge_base"][0]
-            response_text = self._format_knowledge_response(best_match['qa_data'])
-            return self._create_response(response_text, best_match['score'], 'knowledge_base')
-        else:
-            response_text = self._generate_factual_template(user_message, rag_results)
-            return self._create_response(response_text, 0.7, 'template')
+        """Génère une réponse simple et factuelle - VERSION CORRIGÉE"""
+        try:
+            if rag_results["gemini_analysis"]:
+                return self._create_response(rag_results["gemini_analysis"], 0.9, 'gemini')
+            
+            elif (rag_results["knowledge_base"] and 
+                len(rag_results["knowledge_base"]) > 0 and 
+                rag_results["knowledge_base"][0]['score'] > 0.6):
+                
+                best_match = rag_results["knowledge_base"][0]
+                if 'qa_data' in best_match and isinstance(best_match['qa_data'], dict):
+                    response_text = self._format_knowledge_response(best_match['qa_data'])
+                    return self._create_response(response_text, best_match['score'], 'knowledge_base')
+                else:
+                    response_text = self._generate_factual_template(user_message, rag_results)
+                    return self._create_response(response_text, 0.6, 'template')
+            
+            else:
+                response_text = self._generate_factual_template(user_message, rag_results)
+                return self._create_response(response_text, 0.7, 'template')
+                
+        except Exception as e:
+            print(f"❌ Erreur dans _generate_simple_response: {e}")
+            return self._generate_fallback_response(user_message)
 
     def _generate_analytical_response(self, user_message, rag_results, context):
         """Génère une réponse analytique approfondie"""
@@ -235,6 +387,11 @@ class ResponseGenerator:
         response_text = self._generate_solution_template(user_message, rag_results)
         return self._create_response(response_text, 0.8, 'template')
 
+    def _generate_fallback_response(self, user_message):
+        """Génère une réponse de fallback en cas d'erreur"""
+        fallback_text = self._generate_improved_template_response(user_message)
+        return self._create_response(fallback_text, 0.5, 'fallback')
+
     def _create_response(self, response_text, confidence, source):
         """Crée une réponse standardisée"""
         return {
@@ -244,14 +401,20 @@ class ResponseGenerator:
             'source': source
         }
 
-    # === MÉTHODES GEMINI ===
+    # === MÉTHODES GEMINI CORRIGÉES ===
 
     def _generate_with_gemini_fallback(self, user_message):
-        """Utilise Gemini comme fallback quand aucune réponse n'est trouvée"""
+        """Utilise Gemini comme fallback avec gestion d'erreurs améliorée"""
         try:
             prompt = self._build_gemini_fallback_prompt(user_message)
             response = self.gemini_model.generate_content(prompt)
-            return response.text.strip()
+            
+            # Vérifier que la réponse est valide
+            if response and hasattr(response, 'text') and response.text:
+                return response.text.strip()
+            else:
+                raise ValueError("Réponse Gemini vide")
+                
         except Exception as e:
             print(f"❌ Erreur Gemini fallback: {e}")
             return self._generate_improved_template_response(user_message)
@@ -279,6 +442,7 @@ class ResponseGenerator:
         donne une réponse générale mais précise en F CFA. Si c'est hors sujet, redirige gentiment vers le support.
 
         IMPORTANT: Sois concis, utile et professionnel. Utilise un ton chaleureux mais expert.
+        Réponds en français uniquement.
 
         Réponse:
         """
@@ -288,13 +452,19 @@ class ResponseGenerator:
         try:
             prompt = self._build_gemini_context_prompt(user_message, context)
             response = self.gemini_model.generate_content(prompt)
-            return response.text.strip()
+            
+            if response and hasattr(response, 'text') and response.text:
+                return response.text.strip()
+            return None
+            
         except Exception as e:
             print(f"❌ Erreur Gemini: {e}")
             return None
 
     def _build_gemini_context_prompt(self, user_message, context):
         """Construit le prompt contextuel pour Gemini"""
+        context_part = f"CONTEXTE SUPPLÉMENTAIRE:\n{context}\n\n" if context else ""
+        
         return f"""
         Tu es un assistant expert pour ZamaPay, une plateforme de transfert d'argent 
         spécialisée pour le Burkina Faso et l'Afrique de l'Ouest.
@@ -306,9 +476,7 @@ class ResponseGenerator:
         - Réglementation: BCEAO
         - Support: 70 123 456
 
-        CONTEXTE SUPPLÉMENTAIRE:
-        {context}
-
+        {context_part}
         QUESTION UTILISATEUR:
         {user_message}
 
@@ -317,29 +485,32 @@ class ResponseGenerator:
         Si tu ne sais pas, oriente vers le support au 70 123 456.
 
         Ton style: Professionnel mais accessible, structuré avec des sections claires.
+        Réponds en français uniquement.
         """
 
     def _build_rag_context(self, rag_results):
-        """Construit un contexte RAG pour Gemini"""
+        """Construit un contexte RAG pour Gemini - VERSION CORRIGÉE"""
         context_parts = []
         
         # Contexte de la base de connaissances
         if rag_results["knowledge_base"]:
             kb_context = "**Informations de la base ZamaPay :**\n"
             for i, result in enumerate(rag_results["knowledge_base"][:2], 1):
-                kb_context += f"{i}. {result['qa_data']['reponse']}\n"
+                if 'qa_data' in result and isinstance(result['qa_data'], dict):
+                    kb_context += f"{i}. {result['qa_data'].get('reponse', 'Information non disponible')}\n"
             context_parts.append(kb_context)
         
         # Contexte de la recherche web
         if rag_results["web_search"]:
             web_context = "**Informations web récentes :**\n"
             for i, result in enumerate(rag_results["web_search"][:2], 1):
-                web_context += f"{i}. {result['content'][:300]}...\n"
+                if isinstance(result, dict) and 'content' in result:
+                    web_context += f"{i}. {result['content'][:300]}...\n"
             context_parts.append(web_context)
         
-        return "\n\n".join(context_parts) if context_parts else None
+        return "\n\n".join(context_parts) if context_parts else "Aucun contexte supplémentaire disponible."
 
-    # === TEMPLATES ET FORMATTAGE ===
+    # === TEMPLATES ET FORMATTAGE CORRIGÉS ===
 
     def _init_quality_templates(self):
         """Initialise des templates de haute qualité"""
@@ -377,7 +548,7 @@ class ResponseGenerator:
         }
 
     def _generate_improved_template_response(self, user_message):
-        """Génère une réponse template améliorée"""
+        """Génère une réponse template améliorée - VERSION CORRIGÉE"""
         message_lower = user_message.lower()
         
         # Détection de salutation
@@ -391,6 +562,10 @@ class ResponseGenerator:
         # Détection de question sur ZamaPay
         elif any(word in message_lower for word in ["zamapay", "c'est quoi", "qu'est ce", "présentation"]):
             return self._get_zamapay_presentation()
+        
+        # Détection de frustration ou demande d'humain
+        elif any(word in message_lower for word in ["humain", "agent", "parler à", "support", "réel", "vrai personne"]):
+            return self._get_human_support_response()
         
         # Réponse par défaut améliorée
         else:
@@ -417,15 +592,32 @@ ZamaPay est une plateforme de transfert d'argent innovante, spécialisée pour l
 📞 **Support client :** 70 123 456
 🌍 **Site web :** www.zamapay.com"""
 
+    def _get_human_support_response(self):
+        """Retourne une réponse pour parler à un humain"""
+        return """**👨‍💻 Support Humain - ZamaPay**
+
+Je comprends que vous souhaitez parler à un conseiller. Voici comment nous contacter :
+
+**📞 Contact Immédiat :**
+• Téléphone : 70 123 456 (24h/24)
+• Email : support@zamapay.com
+• Chat en direct : Application ZamaPay
+
+**🕒 Horaires Support :**
+• Lundi-Vendredi : 7h-22h
+• Samedi-Dimanche : 8h-20h
+
+Notre équipe est là pour vous aider personnellement !"""
+
     def _get_default_response(self, user_message):
-        """Retourne une réponse par défaut"""
+        """Retourne une réponse par défaut améliorée"""
         return f"""🤖 **Assistant ZamaPay**
 
 Je vois que vous demandez : "{user_message}"
 
-Je suis spécialisé dans l'assistance ZamaPay. Pour une réponse précise et personnalisée, je vous recommande de :
+Je suis spécialisé dans l'assistance ZamaPay. Pour une réponse précise et personnalisée :
 
-**📞 Contacter notre support :**
+**📞 Contactez notre support :**
 • Téléphone : 70 123 456
 • Email : support@zamapay.com
 • Application : Chat en direct
@@ -439,44 +631,82 @@ Je suis spécialisé dans l'assistance ZamaPay. Pour une réponse précise et pe
 N'hésitez pas à poser une question spécifique sur nos services !"""
 
     def _format_conversational_kb_response(self, qa_data):
-        """Formate une réponse KB de façon conversationnelle"""
-        return f"""**{qa_data['question_principale']}**
+        """Formate une réponse KB de façon conversationnelle - VERSION CORRIGÉE"""
+        try:
+            question = qa_data.get('question_principale', 'Question')
+            reponse = qa_data.get('reponse', 'Réponse non disponible')
+            suggestions = self._get_conversational_suggestions(qa_data)
+            
+            return f"""**{question}**
 
-{qa_data['reponse']}
+{reponse}
 
-{self._get_conversational_suggestions(qa_data)}"""
+{suggestions}"""
+        except Exception as e:
+            print(f"❌ Erreur formatage conversationnel: {e}")
+            return "Désolé, je rencontre un problème pour afficher cette information."
 
     def _format_knowledge_response(self, qa_data):
-        """Formate une réponse de base de connaissances"""
-        return f"""**{qa_data['question_principale']}**
+        """Formate une réponse de base de connaissances - VERSION CORRIGÉE"""
+        try:
+            question = qa_data.get('question_principale', 'Question')
+            reponse = qa_data.get('reponse', 'Réponse non disponible')
+            suggestions = self._get_related_suggestions(qa_data)
+            
+            return f"""**{question}**
 
-{qa_data['reponse']}
+{reponse}
 
-{self._get_related_suggestions(qa_data)}"""
+{suggestions}"""
+        except Exception as e:
+            print(f"❌ Erreur formatage connaissance: {e}")
+            return "Information temporairement indisponible."
 
     def _get_conversational_suggestions(self, qa_data):
-        """Suggère des questions de façon conversationnelle"""
-        related = []
-        for related_id in qa_data.get('questions_connexes', []):
-            related_qa = self.retrieval_system.get_qa_by_id(related_id)
-            if related_qa:
-                related.append(f"\"{related_qa['question_principale']}\"")
-        
-        if related:
-            return f"\n**🤔 Questions connexes :** {', '.join(related[:2])}"
-        return "\n**💬 Besoin de plus de détails ?** Je suis là pour vous aider !"
+        """Suggère des questions de façon conversationnelle - VERSION CORRIGÉE"""
+        try:
+            related = []
+            questions_connexes = qa_data.get('questions_connexes', [])
+            
+            if questions_connexes and hasattr(self.retrieval_system, 'get_qa_by_id'):
+                for related_id in questions_connexes[:2]:  # Limiter à 2 suggestions
+                    try:
+                        related_qa = self.retrieval_system.get_qa_by_id(related_id)
+                        if related_qa and isinstance(related_qa, dict):
+                            related.append(f"\"{related_qa.get('question_principale', 'Question connexe')}\"")
+                    except:
+                        continue
+            
+            if related:
+                return f"\n**🤔 Questions connexes :** {', '.join(related)}"
+            return "\n**💬 Besoin de plus de détails ?** Je suis là pour vous aider !"
+            
+        except Exception as e:
+            print(f"❌ Erreur suggestions conversationnelles: {e}")
+            return ""
 
     def _get_related_suggestions(self, qa_data):
-        """Suggère des questions connexes"""
-        related = []
-        for related_id in qa_data.get('questions_connexes', []):
-            related_qa = self.retrieval_system.get_qa_by_id(related_id)
-            if related_qa:
-                related.append(f"• {related_qa['question_principale']}")
-        
-        if related:
-            return "\n**💡 Vous pourriez aussi aimer :**\n" + "\n".join(related[:2])
-        return ""
+        """Suggère des questions connexes - VERSION CORRIGÉE"""
+        try:
+            related = []
+            questions_connexes = qa_data.get('questions_connexes', [])
+            
+            if questions_connexes and hasattr(self.retrieval_system, 'get_qa_by_id'):
+                for related_id in questions_connexes[:2]:
+                    try:
+                        related_qa = self.retrieval_system.get_qa_by_id(related_id)
+                        if related_qa and isinstance(related_qa, dict):
+                            related.append(f"• {related_qa.get('question_principale', 'Question connexe')}")
+                    except:
+                        continue
+            
+            if related:
+                return "\n**💡 Vous pourriez aussi aimer :**\n" + "\n".join(related)
+            return ""
+            
+        except Exception as e:
+            print(f"❌ Erreur suggestions connexes: {e}")
+            return ""
 
     # === TEMPLATES SPÉCIALISÉS ===
 
@@ -486,7 +716,7 @@ N'hésitez pas à poser une question spécifique sur nos services !"""
 
     def _generate_analytical_template(self, user_message, rag_results, context):
         """Génère un template analytique"""
-        return f"""**🔍 Analyse ZamaPay**
+        return """**🔍 Analyse ZamaPay**
 
 Votre question nécessite une analyse approfondie. Pour une réponse complète et personnalisée, je vous recommande de contacter notre équipe d'experts.
 
@@ -497,7 +727,7 @@ Notre équipe pourra vous fournir une analyse détaillée adaptée à votre situ
 
     def _generate_comparison_template(self, user_message, rag_results):
         """Génère un template comparatif"""
-        return f"""**🔄 Comparaison ZamaPay**
+        return """**🔄 Comparaison ZamaPay**
 
 Pour une comparaison détaillée avec d'autres solutions, notre équipe commerciale peut vous préparer une étude personnalisée.
 
@@ -508,7 +738,7 @@ Nous pouvons comparer : frais, délais, sécurité, fonctionnalités selon vos b
 
     def _generate_solution_template(self, user_message, rag_results):
         """Génère un template de résolution de problème"""
-        return f"""**🛠️ Support Technique ZamaPay**
+        return """**🛠️ Support Technique ZamaPay**
 
 Notre équipe technique est disponible pour résoudre votre problème rapidement.
 
@@ -588,13 +818,23 @@ Notre équipe technique est disponible pour résoudre votre problème rapidement
                 return topic
         return "general"
 
-# Exemple d'utilisation
+# Test rapide de la classe
 if __name__ == "__main__":
-    # Test rapide de la classe
-    from retrieval_system import RetrievalSystem  # À adapter selon votre implémentation
+    print("🧪 Test ResponseGenerator corrigé...")
     
-    print("🧪 Test ResponseGenerator...")
-    retrieval = RetrievalSystem()
+    # Mock du retrieval system pour le test
+    class MockRetrievalSystem:
+        def search(self, query):
+            return [{
+                'score': 0.9,
+                'qa_data': {
+                    'question_principale': 'Question test',
+                    'reponse': 'Réponse test',
+                    'questions_connexes': []
+                }
+            }]
+    
+    retrieval = MockRetrievalSystem()
     generator = ResponseGenerator(retrieval)
     
     test_questions = [
@@ -607,6 +847,5 @@ if __name__ == "__main__":
         print(f"\nQ: {question}")
         response = generator.generate_response(question)
         print(f"A: {response['response'][:100]}...")
-        print(f"Confiance: {response['confidence']}")
+        print(f"Confiance: {response['confidence']} | Source: {response['source']}")
         
-    
