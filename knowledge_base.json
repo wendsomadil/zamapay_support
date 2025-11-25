@@ -1,0 +1,415 @@
+{
+  "qa_pairs": [
+    {
+      "id": 1,
+      "question_principale": "Quels sont vos frais pour les transferts ?",
+      "variations": [
+        "Quels sont vos frais ?",
+        "Combien coûte un transfert ?",
+        "Quels frais appliquez-vous ?",
+        "Y a-t-il des frais pour envoyer de l'argent ?",
+        "Tarifs des transferts"
+      ],
+      "reponse": "Nos frais sont transparents et adaptés au marché burkinabé :\n- Transferts nationaux : 1% (min. 500 F CFA)\n- Transferts UEMOA : 1.5% (min. 750 F CFA)\n- Transferts internationaux hors UEMOA : 2% (min. 1000 F CFA)\n- Transferts mobile money : 1% (min. 250 F CFA)\n\nLes frais sont affichés clairement avant chaque transaction.",
+      "categorie": "Frais et Tarifs",
+      "sous_categorie": "Frais de transfert",
+      "mots_cles": ["frais", "tarifs", "coût", "transfert", "CFA", "UEMOA", "frais mobile money"],
+      "niveau_complexite": 1,
+      "questions_connexes": [2, 3, 4],
+      "statistiques_interaction": {
+        "likes": 0,
+        "dislikes": 0,
+        "suggestions_utilisateurs": [],
+        "nombre_vues": 0,
+        "note_moyenne": 0,
+        "date_creation": "2024-01-15",
+        "date_derniere_modification": "2024-01-15",
+        "est_faq": true,
+        "langue": "fr"
+      },
+      "metadonnees": {
+        "auteur": "support",
+        "produit_concerne": ["transfert", "mobile money"],
+        "public_cible": ["particulier", "professionnel"],
+        "pays_cibles": ["BF", "CI", "ML", "SN", "NE", "TG"],
+        "devise": "XOF",
+        "region": "Afrique de l'Ouest"
+      }
+    },
+    {
+      "id": 2,
+      "question_principale": "Comment envoyer de l'argent vers un compte mobile money ?",
+      "variations": [
+        "Envoyer argent mobile money",
+        "Transfert vers Orange Money",
+        "Transfert vers Moov Money",
+        "Comment envoyer sur mobile money ?"
+      ],
+      "reponse": "Pour envoyer de l'argent vers un compte mobile money (Orange Money, Moov Money) :\n\n1. Connectez-vous à votre compte\n2. Sélectionnez 'Transfert vers mobile money'\n3. Choisissez l'opérateur (Orange ou Moov)\n4. Entrez le numéro de téléphone du bénéficiaire\n5. Saisissez le montant en F CFA\n6. Confirmez la transaction\n\nLe transfert est instantané et les frais sont de 1% (minimum 250 F CFA).",
+      "categorie": "Transferts",
+      "sous_categorie": "Mobile Money",
+      "mots_cles": ["mobile money", "orange money", "moov money", "transfert instantané", "numéro téléphone"],
+      "niveau_complexite": 1,
+      "questions_connexes": [1, 5],
+      "statistiques_interaction": {
+        "likes": 0,
+        "dislikes": 0,
+        "suggestions_utilisateurs": [],
+        "nombre_vues": 0,
+        "note_moyenne": 0,
+        "date_creation": "2024-01-15",
+        "date_derniere_modification": "2024-01-15",
+        "est_faq": true,
+        "langue": "fr"
+      },
+      "metadonnees": {
+        "auteur": "support",
+        "produit_concerne": ["mobile money"],
+        "public_cible": ["particulier"],
+        "pays_cibles": ["BF"],
+        "operateurs_supportes": ["Orange Money", "Moov Money"],
+        "devise": "XOF"
+      }
+    },
+    {
+      "id": 3,
+      "question_principale": "Quels sont les plafonds de transfert pour le Burkina Faso ?",
+      "variations": [
+        "Limite de transfert",
+        "Plafond d'envoi d'argent",
+        "Montant maximum transfert",
+        "Quelle somme maximale je peux envoyer ?"
+      ],
+      "reponse": "Nos plafonds de transfert pour le Burkina Faso sont :\n\n**Pour les particuliers :**\n- Transfert journalier : 500 000 F CFA\n- Transfert mensuel : 5 000 000 F CFA\n\n**Pour les professionnels :**\n- Transfert journalier : 2 000 000 F CFA\n- Transfert mensuel : 20 000 000 F CFA\n\nCes limites peuvent être augmentées après vérification complète de votre compte.",
+      "categorie": "Limites et Plafonds",
+      "sous_categorie": "Plafonds de transfert",
+      "mots_cles": ["plafond", "limite", "montant maximum", "transfert journalier", "transfert mensuel"],
+      "niveau_complexite": 1,
+      "questions_connexes": [6, 7],
+      "statistiques_interaction": {
+        "likes": 0,
+        "dislikes": 0,
+        "suggestions_utilisateurs": [],
+        "nombre_vues": 0,
+        "note_moyenne": 0,
+        "date_creation": "2024-01-15",
+        "date_derniere_modification": "2024-01-15",
+        "est_faq": true,
+        "langue": "fr"
+      },
+      "metadonnees": {
+        "auteur": "support",
+        "produit_concerne": ["transfert", "compte"],
+        "public_cible": ["particulier", "professionnel"],
+        "pays_cibles": ["BF"],
+        "devise": "XOF",
+        "reglementation": "BCEAO"
+      }
+    },
+    {
+      "id": 4,
+      "question_principale": "Comment ouvrir un compte ?",
+      "variations": [
+        "Créer un compte",
+        "Inscription",
+        "Débuter avec votre service",
+        "Ouvrir un compte professionnel"
+      ],
+      "reponse": "Pour ouvrir un compte, vous avez besoin :\n\n**Documents requis :**\n- Carte nationale d'identité ou passeport\n- Justificatif de domicile de moins de 3 mois\n- Photo d'identité récente\n\n**Pour les professionnels :**\n- Registre de commerce\n- NIF (Numéro d'Identification Fiscale)\n- Statuts de l'entreprise\n\nLe processus est entièrement numérique et prend moins de 24 heures.",
+      "categorie": "Compte",
+      "sous_categorie": "Ouverture de compte",
+      "mots_cles": ["ouvrir compte", "inscription", "documents", "carte identité", "professionnel"],
+      "niveau_complexite": 2,
+      "questions_connexes": [8, 9],
+      "statistiques_interaction": {
+        "likes": 0,
+        "dislikes": 0,
+        "suggestions_utilisateurs": [],
+        "nombre_vues": 0,
+        "note_moyenne": 0,
+        "date_creation": "2024-01-15",
+        "date_derniere_modification": "2024-01-15",
+        "est_faq": true,
+        "langue": "fr"
+      },
+      "metadonnees": {
+        "auteur": "support",
+        "produit_concerne": ["compte"],
+        "public_cible": ["particulier", "professionnel"],
+        "pays_cibles": ["BF", "CI", "ML", "SN"],
+        "documents_acceptes": ["CNI", "Passeport", "Permis conduire"]
+      }
+    },
+    {
+      "id": 5,
+      "question_principale": "Quel est le délai pour un transfert vers la Côte d'Ivoire ?",
+      "variations": [
+        "Délai transfert Côte d'Ivoire",
+        "Temps transfert CI",
+        "Quand arrive l'argent en Côte d'Ivoire ?",
+        "Transfert UEMOA délai"
+      ],
+      "reponse": "Les transferts vers la Côte d'Ivoire dans l'espace UEMOA sont très rapides :\n\n- **Transfert standard** : 2 heures maximum\n- **Transfert express** : 15 minutes (frais supplémentaires de 500 F CFA)\n- **Transfert mobile money** : Instantané\n\nVous recevrez une notification SMS à chaque étape du transfert.",
+      "categorie": "Délais",
+      "sous_categorie": "Transferts UEMOA",
+      "mots_cles": ["délai", "transfert", "Côte d'Ivoire", "UEMOA", "instantané", "rapide"],
+      "niveau_complexite": 1,
+      "questions_connexes": [1, 10],
+      "statistiques_interaction": {
+        "likes": 0,
+        "dislikes": 0,
+        "suggestions_utilisateurs": [],
+        "nombre_vues": 0,
+        "note_moyenne": 0,
+        "date_creation": "2024-01-15",
+        "date_derniere_modification": "2024-01-15",
+        "est_faq": true,
+        "langue": "fr"
+      },
+      "metadonnees": {
+        "auteur": "support",
+        "produit_concerne": ["transfert"],
+        "public_cible": ["particulier", "professionnel"],
+        "pays_cibles": ["BF", "CI"],
+        "devise": "XOF",
+        "reseau": "UEMOA"
+      }
+    },
+    {
+      "id": 6,
+      "question_principale": "Comment augmenter mes limites de transfert ?",
+      "variations": [
+        "Augmenter plafond",
+        "Limite trop basse",
+        "Comment envoyer plus d'argent ?",
+        "Vérification compte pour plus de limites"
+      ],
+      "reponse": "Pour augmenter vos limites de transfert, vous devez compléter la vérification de votre compte :\n\n**Étape 1 :** Vérification d'identité\n- Photo de votre CNI recto-verso\n- Selfie avec votre pièce d'identité\n\n**Étape 2 :** Vérification de revenus\n- Bulletin de salaire\n- Relevé bancaire\n- Attestation de travail\n\n**Étape 3 :** Visioconférence avec un conseiller\n\nAprès vérification, vos limites peuvent atteindre 10 000 000 F CFA mensuels.",
+      "categorie": "Limites et Plafonds",
+      "sous_categorie": "Augmentation limites",
+      "mots_cles": ["augmenter limite", "vérification compte", "plafond plus élevé", "documents"],
+      "niveau_complexite": 2,
+      "questions_connexes": [3, 8],
+      "statistiques_interaction": {
+        "likes": 0,
+        "dislikes": 0,
+        "suggestions_utilisateurs": [],
+        "nombre_vues": 0,
+        "note_moyenne": 0,
+        "date_creation": "2024-01-15",
+        "date_derniere_modification": "2024-01-15",
+        "est_faq": true,
+        "langue": "fr"
+      },
+      "metadonnees": {
+        "auteur": "support",
+        "produit_concerne": ["compte", "transfert"],
+        "public_cible": ["particulier", "professionnel"],
+        "pays_cibles": ["BF"],
+        "devise": "XOF"
+      }
+    },
+    {
+      "id": 7,
+      "question_principale": "Quelles devises acceptez-vous pour les dépôts ?",
+      "variations": [
+        "Devises acceptées",
+        "Puis-je déposer des euros ?",
+        "Acceptez-vous les dollars ?",
+        "Dépôt en devise étrangère"
+      ],
+      "reponse": "Nous acceptons les devises suivantes pour les dépôts :\n\n**Devises principales :**\n- F CFA (XOF) - Devise par défaut\n- Euro (EUR) - Conversion automatique\n- Dollar US (USD) - Conversion automatique\n\n**Taux de change :**\n- Les taux sont mis à jour quotidiennement\n- Aucun frais supplémentaire pour la conversion\n- Le montant en F CFA est crédité sur votre compte\n\nPour les autres devises, contactez notre service client.",
+      "categorie": "Devises",
+      "sous_categorie": "Devises acceptées",
+      "mots_cles": ["devises", "euro", "dollar", "taux change", "conversion", "dépôt"],
+      "niveau_complexite": 2,
+      "questions_connexes": [11, 12],
+      "statistiques_interaction": {
+        "likes": 0,
+        "dislikes": 0,
+        "suggestions_utilisateurs": [],
+        "nombre_vues": 0,
+        "note_moyenne": 0,
+        "date_creation": "2024-01-15",
+        "date_derniere_modification": "2024-01-15",
+        "est_faq": true,
+        "langue": "fr"
+      },
+      "metadonnees": {
+        "auteur": "support",
+        "produit_concerne": ["compte", "dépôt"],
+        "public_cible": ["particulier", "professionnel"],
+        "pays_cibles": ["BF"],
+        "devises_acceptees": ["XOF", "EUR", "USD"]
+      }
+    },
+    {
+      "id": 8,
+      "question_principale": "Problème de vérification d'identité",
+      "variations": [
+        "Vérification échouée",
+        "Documents refusés",
+        "Problème CNI",
+        "Vérification identité bloquée"
+      ],
+      "reponse": "Si votre vérification d'identité rencontre des problèmes :\n\n**Solutions courantes :**\n- Assurez que la photo de votre CNI soit nette et sans reflet\n- Vérifiez que tous les bords du document sont visibles\n- Prenez la photo dans un endroit bien éclairé\n- Vérifiez que votre document n'est pas expiré\n\n**Si le problème persiste :**\n1. Contactez notre support au 70 123 456 (coût appel local)\n2. Ou écrivez à support@example.com\n3. Visitez notre agence à Ouagadougou, zone du bois\n\nNous traitons les réclamations sous 24 heures.",
+      "categorie": "Support",
+      "sous_categorie": "Problèmes vérification",
+      "mots_cles": ["vérification", "CNI", "documents refusés", "support", "problème"],
+      "niveau_complexite": 2,
+      "questions_connexes": [4, 13],
+      "statistiques_interaction": {
+        "likes": 0,
+        "dislikes": 0,
+        "suggestions_utilisateurs": [],
+        "nombre_vues": 0,
+        "note_moyenne": 0,
+        "date_creation": "2024-01-15",
+        "date_derniere_modification": "2024-01-15",
+        "est_faq": true,
+        "langue": "fr"
+      },
+      "metadonnees": {
+        "auteur": "support",
+        "produit_concerne": ["compte"],
+        "public_cible": ["particulier", "professionnel"],
+        "pays_cibles": ["BF"],
+        "urgence": "moyenne"
+      }
+    }
+  ],
+  "suggestions_utilisateurs": [
+    {
+      "id_suggestion": 1,
+      "id_question": 1,
+      "suggestion_texte": "Pourriez-vous ajouter des exemples concrets de calcul avec des montants en F CFA ?",
+      "date_suggestion": "2024-01-20",
+      "utilisateur": "user_ouaga123",
+      "statut": "en_attente",
+      "votes_positifs": 5,
+      "votes_negatifs": 0,
+      "categorie_suggestion": "amelioration_reponse"
+    }
+  ],
+  "feedback_utilisateurs": [
+    {
+      "id_feedback": 1,
+      "id_question": 1,
+      "type_feedback": "like",
+      "utilisateur": "user_bobo456",
+      "date_feedback": "2024-01-18",
+      "commentaire": "Très clair, merci pour la transparence sur les frais !",
+      "note": 5
+    }
+  ],
+  "categories_principales": [
+    {
+      "id_categorie": 1,
+      "nom_categorie": "Frais et Tarifs",
+      "description": "Informations sur les frais, commissions et tarifs appliqués",
+      "sous_categories": [
+        "Frais de transfert",
+        "Frais de compte", 
+        "Frais de change",
+        "Frais mobile money"
+      ],
+      "nombre_questions": 45,
+      "icone": "💰"
+    },
+    {
+      "id_categorie": 2,
+      "nom_categorie": "Transferts",
+      "description": "Questions relatives aux envois et réceptions d'argent",
+      "sous_categories": [
+        "Transferts nationaux",
+        "Transferts UEMOA",
+        "Transferts internationaux",
+        "Mobile Money",
+        "Transferts urgents"
+      ],
+      "nombre_questions": 78,
+      "icone": "↔️"
+    },
+    {
+      "id_categorie": 3,
+      "nom_categorie": "Compte",
+      "description": "Gestion et fonctionnement du compte",
+      "sous_categories": [
+        "Ouverture de compte",
+        "Fermeture de compte",
+        "Vérification compte",
+        "Profil utilisateur"
+      ],
+      "nombre_questions": 34,
+      "icone": "👤"
+    },
+    {
+      "id_categorie": 4,
+      "nom_categorie": "Sécurité",
+      "description": "Sécurité du compte et protection des transactions",
+      "sous_categories": [
+        "Mot de passe",
+        "Vérification en deux étapes",
+        "Transactions suspectes",
+        "Protection compte"
+      ],
+      "nombre_questions": 23,
+      "icone": "🔒"
+    },
+    {
+      "id_categorie": 5,
+      "nom_categorie": "Support Client",
+      "description": "Contact et assistance clientèle",
+      "sous_categories": [
+        "Contact support",
+        "Réclamation",
+        "Problèmes techniques",
+        "Agences physiques"
+      ],
+      "nombre_questions": 29,
+      "icone": "📞"
+    }
+  ],
+  "statistiques_globales": {
+    "total_questions": 209,
+    "total_likes": 1245,
+    "total_dislikes": 89,
+    "taux_satisfaction": 93.3,
+    "questions_populaires": [1, 5, 12, 45, 78],
+    "langues_supportees": ["fr", "en", "dioula", "moore"],
+    "date_mise_a_jour": "2024-01-20"
+  },
+  "template_questions": {
+    "frais_transfert": {
+      "structure": "Quels sont les frais pour [type_transfert] [montant] [destination] ?",
+      "exemples": [
+        "Quels sont les frais pour un transfert de 50 000 F CFA vers le Mali ?",
+        "Quels sont les frais pour un transfert mobile money de 25 000 F CFA ?"
+      ]
+    },
+    "delais_transfert": {
+      "structure": "Combien de temps pour [type_transfert] [destination] ?",
+      "exemples": [
+        "Combien de temps pour un transfert vers le Sénégal ?",
+        "Délai pour transfert express vers la Côte d'Ivoire ?"
+      ]
+    }
+  },
+  "pays_couverts": [
+    {
+      "code": "BF",
+      "nom": "Burkina Faso",
+      "devise": "XOF",
+      "operateurs_mobile_money": ["Orange Money", "Moov Money"],
+      "langues": ["fr", "moore", "dioula"]
+    },
+    {
+      "code": "CI", 
+      "nom": "Côte d'Ivoire",
+      "devise": "XOF",
+      "operateurs_mobile_money": ["Orange Money", "MTN Money"],
+      "langues": ["fr", "dioula"]
+    }
+  ]
+}
+
