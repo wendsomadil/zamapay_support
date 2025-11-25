@@ -3,39 +3,44 @@
 RESPONSE_GENERATOR OPTIMISÉ - ZAMAPAY
 Version professionnelle avec corrections complètes et performances améliorées
 """
-
+import os
 import random
 import json
 import time
 import threading
 from typing import Dict, List, Optional
 import google.generativeai as genai
+from dotenv import load_dotenv
 
 class ResponseGenerator:
-    """Générateur de réponses intelligent pour ZamaPay"""
+    """Générateur de réponses sécurisé avec clé API protégée"""
     
     def __init__(self, retrieval_system):
-        """Initialise le générateur avec tous les composants nécessaires"""
+        # Charger les variables d'environnement
+        load_dotenv()
+        
         self.retrieval_system = retrieval_system
         self.conversation_memory = {}
-        self.escalation_threshold = 0.4
-        
-        # Cache optimisé
         self.kb_cache = {}
-        self.cache_timeout = 3600  # 1 heure
+        self.cache_timeout = 3600
         
-        # Configuration Gemini avec votre clé
-        self.gemini_api_key = "AIzaSyD_LCuo-aeXD4kaXVl__R1JKMLdQm04kRw"
-        self._setup_gemini()
+        # ✅ RÉCUPÉRER LA CLÉ DEPUIS .env (SÉCURISÉ)
+        self.gemini_api_key = os.getenv('GEMINI_API_KEY')
+        
+        if not self.gemini_api_key:
+            print("❌ ERREUR: Clé API Gemini non trouvée dans .env")
+            print("💡 Créez un fichier .env avec: GEMINI_API_KEY=votre_cle")
+            self.gemini_model = None
+        else:
+            self._setup_gemini()
         
         print("✅ ResponseGenerator initialisé")
 
     def _setup_gemini(self):
-        """Configure Gemini 2.5 Flash avec gestion d'erreurs robuste"""
+        """Configure Gemini de manière sécurisée"""
         try:
             genai.configure(api_key=self.gemini_api_key)
             
-            # Configuration optimale pour Gemini 2.5 Flash
             self.gemini_model = genai.GenerativeModel(
                 'gemini-2.5-flash',
                 generation_config={
@@ -48,7 +53,7 @@ class ResponseGenerator:
             print("✅ Gemini 2.5 Flash configuré")
             
         except Exception as e:
-            print(f"⚠️ Gemini non disponible: {e}")
+            print(f"⚠️ Erreur Gemini: {e}")
             self.gemini_model = None
             
     def generate_response(self, user_message: str, user_name: str = "Utilisateur") -> Dict:
@@ -532,4 +537,3 @@ if __name__ == "__main__":
         print(f"💬 Réponse: {response['response'][:100]}...")
         print("-" * 60)
         
-
