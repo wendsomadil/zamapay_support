@@ -42,16 +42,10 @@ class ResponseGenerator:
     def _setup_gemini(self):
         """Configure l'API Gemini avec gestion d'erreurs robuste"""
         try:
-            # Configuration avec l'API key et l'en-tête Referer pour Streamlit
-            genai.configure(api_key=self.gemini_api_key)
-            # En-tête pour indiquer l'origine de la requête (le site Streamlit)
-            self.gemini_model = genai.GenerativeModel(
-                'gemini-2.5-flash',
-                headers={
-                    'Referer': 'https://zamapaysupport.streamlit.app/',  # Votre URL Streamlit
-                    'Authorization': f'Bearer {self.gemini_api_key}'
-                }
-            )
+            # Configurez correctement l'API Gemini avec la clé API
+            genai.configure(api_key=self.gemini_api_key)  # Simplement passer la clé API
+            # Utilisation du modèle Gemini sans 'headers'
+            self.gemini_model = genai.GenerativeModel('gemini-2.5-flash')
             print("✅ Gemini configuré avec succès")
         except Exception as e:
             print(f"❌ Erreur configuration Gemini: {e}")
@@ -780,3 +774,4 @@ if __name__ == "__main__":
         print(f"A: {response['response'][:100]}...")
         print(f"Confiance: {response['confidence']} | Source: {response['source']}")
         
+
