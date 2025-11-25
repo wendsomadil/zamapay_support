@@ -364,7 +364,7 @@ def show_login_page():
     <div style="text-align: center; color: #6B7280; font-size: 0.8rem; margin-top: 2rem;">
         <strong>ZamaPay Support</strong><br>
         📞 01 23 45 67 89 • 📧 support@zamapay.com<br>
-        © 2024 ZamaPay - Tous droits réservés
+        © 2025 ZamaPay - Tous droits réservés
     </div>
     """, unsafe_allow_html=True)
 
@@ -396,4 +396,5 @@ def logout():
         del st.session_state.pending_name
     
     st.rerun()
+
     
