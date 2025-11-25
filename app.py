@@ -291,7 +291,7 @@ def show_main_application():
         <strong>ZamaPay Support</strong><br>
         📞 70 123 456 • 📧 support@zamapay.com<br>
         🕒 Lun-Ven 8h-20h | Sam 9h-18h<br>
-        © 2024 ZamaPay - Tous droits réservés
+        © 2025 ZamaPay - Tous droits réservés
     </div>
     """, unsafe_allow_html=True)
 
@@ -344,4 +344,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
     
