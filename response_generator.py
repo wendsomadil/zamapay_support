@@ -29,7 +29,7 @@ class ResponseGenerator:
         
         if not self.gemini_api_key:
             print("❌ ERREUR: Clé API Gemini non trouvée dans .env")
-            print("💡 Créez un fichier .env avec: GEMINI_API_KEY=votre_cle")
+            print("💡 Créez un fichier .env avec: GEMINI_API_KEY=AIzaSyD2mbjiSiPV2PSurmxAUB8MZb9YB02xXNE")
             self.gemini_model = None
         else:
             self._setup_gemini()
@@ -272,14 +272,6 @@ Notre équipe est là pour vous aider ! 💙""",
     ) -> Dict:
         """
         Formate la meilleure réponse depuis la base de connaissances
-        
-        Args:
-            kb_results: Résultats de recherche
-            query: Question originale
-            user_name: Nom de l'utilisateur
-            
-        Returns:
-            Réponse formatée
         """
         if not kb_results:
             return self._generate_template_response(query, user_name)
@@ -287,26 +279,21 @@ Notre équipe est là pour vous aider ! 💙""",
         best = kb_results[0]
         qa_data = best.get('qa_data', {})
         
-        # Extraire les informations
-        question = qa_data.get('question', 'Information')
-        answer = qa_data.get('answer', qa_data.get('reponse', ''))
+        # CORRECTION : Utiliser la bonne clé 'reponse' au lieu de 'answer'
+        question = qa_data.get('question_principale', 'Information')
+        answer = qa_data.get('reponse', '') 
         
         if not answer:
             return self._generate_template_response(query, user_name)
         
         # Formater la réponse
-        formatted = f"**{question}**\n\n{answer}"
-        
-        # Ajouter suggestions si disponibles
-        related = qa_data.get('questions_connexes', [])
-        if related and len(related) > 0:
-            formatted += "\n\n**💡 Questions connexes:** Posez-moi d'autres questions sur ZamaPay !"
+        formatted = answer 
         
         return {
             'response': formatted,
             'confidence': best.get('score', 0.7),
             'source': 'knowledge_base'
-        }
+    }
 
     def _generate_template_response(self, query: str, user_name: str) -> Dict:
         """
@@ -535,4 +522,4 @@ if __name__ == "__main__":
         print(f"📊 Source: {response['source']}")
         print(f"💬 Réponse: {response['response'][:100]}...")
         print("-" * 60)
-        
+   
