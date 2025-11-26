@@ -10,7 +10,7 @@ import faiss
 import google.generativeai as genai
 from typing import List, Dict, Tuple
 import pickle
-from dotenv import load_dotenv  # AJOUT: Import manquant
+from dotenv import load_dotenv 
 
 class FAISSGeminiRetrieval:
     """Système FAISS avec API sécurisée"""
@@ -28,7 +28,7 @@ class FAISSGeminiRetrieval:
         self.metadata_path = metadata_path
         
         # Charger depuis .env si pas fourni
-        load_dotenv()  # CORRECTION: Cette ligne était correcte mais l'import manquait
+        load_dotenv()
         
         api_key = gemini_api_key or os.getenv('GEMINI_API_KEY')
         
@@ -48,7 +48,7 @@ class FAISSGeminiRetrieval:
         # Charger ou créer l'index
         self.documents = []
         self.index = None
-        self.dimension = 768  # Dimension des embeddings Gemini
+        self.dimension = 768 
         
         self._load_or_create_index()
     
@@ -80,7 +80,6 @@ class FAISSGeminiRetrieval:
         texts_to_embed = []
         
         for pair in qa_pairs:
-            # CORRECTION: Utiliser les bonnes clés de votre base de connaissances
             question = pair.get('question_principale', '')
             answer = pair.get('reponse', '')
             category = pair.get('categorie', 'general')
@@ -132,7 +131,7 @@ class FAISSGeminiRetrieval:
                 try:
                     # Utiliser l'API d'embedding de Gemini
                     result = genai.embed_content(
-                        model="models/embedding-001",  # CORRECTION: Modèle d'embedding correct
+                        model="models/embedding-001", 
                         content=text,
                         task_type="retrieval_document"
                     )
@@ -161,7 +160,7 @@ class FAISSGeminiRetrieval:
         """
         try:
             result = genai.embed_content(
-                model="models/embedding-001",  # CORRECTION: Modèle d'embedding correct
+                model="models/embedding-001", 
                 content=query,
                 task_type="retrieval_query"
             )
@@ -346,7 +345,7 @@ if __name__ == "__main__":
     # Initialiser le système
     retrieval = FAISSGeminiRetrieval(
         knowledge_base_path="knowledge_base.json",
-        gemini_api_key="AIzaSyAtGtWpNznzcFYVQ4-sC2heIwPUCTGoxC8"  # Ou via variable d'environnement
+        gemini_api_key="AIzaSyAtGtWpNznzcFYVQ4-sC2heIwPUCTGoxC8" 
     )
     
     # Tester une recherche
