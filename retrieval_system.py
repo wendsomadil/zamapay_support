@@ -60,6 +60,7 @@ class RetrievalSystem:
             return
         
         for qa in self.knowledge_base['qa_pairs']:
+            # Vérifier que qa est un dictionnaire valide
             if not isinstance(qa, dict):
                 print("⚠️ Q&A ignoré: n'est pas un dictionnaire")
                 continue
@@ -82,7 +83,7 @@ class RetrievalSystem:
             variations = qa.get('variations', [])
             if isinstance(variations, list):
                 for variation in variations:
-                    if variation:
+                    if variation:  
                         variation_text = self.preprocess_text(variation)
                         if variation_text:
                             texts_to_vectorize.append(variation_text)
@@ -103,8 +104,8 @@ class RetrievalSystem:
             print("❌ Aucun texte à vectoriser")
             self.qa_vectors = None
     
-    def search(self, query, top_k=3, confidence_threshold=0.5):
-        """Recherche avec seuil de confiance plus élevé"""
+    def search(self, query, top_k=3, confidence_threshold=0.1):  
+        """Recherche avec seuil de confiance plus bas"""
         if self.qa_vectors is None or self.qa_vectors.shape[0] == 0:
             return []
         
@@ -117,10 +118,14 @@ class RetrievalSystem:
             results = []
             for idx in top_indices:
                 score = similarities[0][idx]
-                if score >= confidence_threshold:
+                if score >= confidence_threshold:  
                     qa_ref = self.qa_references[idx]
+                    
+                    # Vérifier que qa_data existe
                     if 'qa_data' not in qa_ref:
                         continue
+                    
+                    # Éviter les doublons
                     qa_id = qa_ref['qa_data'].get('id')
                     if not any(r['qa_data'].get('id') == qa_id for r in results):
                         results.append({
@@ -143,7 +148,9 @@ class RetrievalSystem:
         for qa in self.knowledge_base['qa_pairs']:
             if qa.get('id') == qa_id:
                 return qa
-                
+        return None
+                  
         return None
     
+
 
