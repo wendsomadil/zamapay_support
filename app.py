@@ -2,7 +2,7 @@ import streamlit as st
 import json
 import time
 from datetime import datetime
-from retrieval_system import RetrievalSystem
+from unified_retrieval import UnifiedRetrievalSystem
 from response_generator import ResponseGenerator
 from login import show_login_page, check_authentication, logout
 from auth_system import auth_system
@@ -299,19 +299,23 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Initialisation
 @st.cache_resource
 def initialize_systems():
     try:
-        import os
-        if not os.path.exists("knowledge_base.json"):
-            with open("knowledge_base.json", "w", encoding="utf-8") as f:
-                json.dump({"qa_pairs": []}, f, ensure_ascii=False, indent=2)
-        retrieval = RetrievalSystem("knowledge_base.json")
+        # Essayer FAISS d'abord, fallback sur TF-IDF
+        retrieval = UnifiedRetrievalSystem("knowledge_base.json", use_faiss=True)
+        
+        # Vérifier quelle technologie est utilisée
+        if retrieval.use_faiss:
+            print("🚀 FAISS activé - Recherche sémantique avancée")
+        else:
+            print("🔍 TF-IDF activé - Recherche standard")
+            
         response_gen = ResponseGenerator(retrieval)
         return retrieval, response_gen
+        
     except Exception as e:
-        st.error(f"❌ Erreur: {str(e)}")
+        st.error(f"❌ Erreur initialisation: {str(e)}")
         return None, None
 
 def show_navigation():
