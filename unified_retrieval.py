@@ -1,0 +1,217 @@
+# unified_retrieval.py
+import os
+import json
+import numpy as np
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import re
+
+class UnifiedRetrievalSystem:
+    def __init__(self, knowledge_base_path="knowledge_base.json", use_faiss=True):
+        self.knowledge_base_path = knowledge_base_path
+        self.use_faiss = use_faiss
+        self.knowledge_base = self.load_knowledge_base(knowledge_base_path)
+        
+        if use_faiss:
+            self._initialize_faiss()
+        else:
+            self._initialize_tfidf()
+    
+    def load_knowledge_base(self, path):
+        """Charge la base de connaissances"""
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            
+            if isinstance(data, dict) and 'qa_pairs' in data:
+                print(f"✅ Base de connaissances chargée: {len(data['qa_pairs'])} Q&A")
+                return data
+            else:
+                print("❌ Structure invalide")
+                return self.create_default_structure()
+                
+        except Exception as e:
+            print(f"❌ Erreur chargement base: {e}")
+            return self.create_default_structure()
+    
+    def create_default_structure(self):
+        """Crée une structure par défaut"""
+        return {"qa_pairs": []}
+    
+    def _initialize_faiss(self):
+        """Initialise FAISS si disponible"""
+        try:
+            import faiss
+            from sentence_transformers import SentenceTransformer
+            
+            # Charger le modèle d'embedding
+            self.model = SentenceTransformer('all-MiniLM-L6-v2')
+            print("✅ Modèle SentenceTransformer chargé")
+            
+            # Préparer les textes pour l'embedding
+            self.texts = []
+            self.qa_mapping = []
+            
+            for qa in self.knowledge_base['qa_pairs']:
+                # Question principale
+                self.texts.append(qa['question_principale'])
+                self.qa_mapping.append({
+                    'type': 'main',
+                    'qa_data': qa
+                })
+                
+                # Variations
+                for variation in qa.get('variations', []):
+                    self.texts.append(variation)
+                    self.qa_mapping.append({
+                        'type': 'variation', 
+                        'qa_data': qa
+                    })
+            
+            # Générer les embeddings
+            if self.texts:
+                embeddings = self.model.encode(self.texts, convert_to_numpy=True)
+                
+                # Créer l'index FAISS
+                dimension = embeddings.shape[1]
+                self.index = faiss.IndexFlatIP(dimension)  # Produit scalaire interne
+                faiss.normalize_L2(embeddings)  # Normaliser pour similarité cosinus
+                self.index.add(embeddings)
+                
+                print(f"✅ FAISS initialisé avec {len(self.texts)} embeddings")
+            else:
+                print("❌ Aucun texte à vectoriser")
+                self.use_faiss = False
+                self._initialize_tfidf()
+                
+        except ImportError as e:
+            print(f"⚠️ FAISS non disponible: {e}")
+            self.use_faiss = False
+            self._initialize_tfidf()
+        except Exception as e:
+            print(f"❌ Erreur initialisation FAISS: {e}")
+            self.use_faiss = False
+            self._initialize_tfidf()
+    
+    def _initialize_tfidf(self):
+        """Initialise TF-IDF (fallback)"""
+        self.vectorizer = TfidfVectorizer(stop_words=None)
+        
+        # Préparer les textes pour TF-IDF
+        texts_to_vectorize = []
+        self.qa_references = []
+        
+        for qa in self.knowledge_base['qa_pairs']:
+            # Question principale
+            question_text = self.preprocess_text(qa['question_principale'])
+            if question_text:
+                texts_to_vectorize.append(question_text)
+                self.qa_references.append({
+                    'type': 'main',
+                    'qa_data': qa
+                })
+            
+            # Variations
+            for variation in qa.get('variations', []):
+                variation_text = self.preprocess_text(variation)
+                if variation_text:
+                    texts_to_vectorize.append(variation_text)
+                    self.qa_references.append({
+                        'type': 'variation',
+                        'qa_data': qa
+                    })
+        
+        if texts_to_vectorize:
+            self.qa_vectors = self.vectorizer.fit_transform(texts_to_vectorize)
+            print(f"✅ TF-IDF initialisé avec {len(texts_to_vectorize)} questions")
+        else:
+            self.qa_vectors = None
+            print("❌ Aucun texte à vectoriser")
+    
+    def preprocess_text(self, text):
+        """Prétraitement du texte"""
+        if not text:
+            return ""
+        text = text.lower().strip()
+        text = re.sub(r'[^\w\s]', '', text)
+        return text
+    
+    def search(self, query, top_k=3, confidence_threshold=0.1):
+        """Recherche unifiée - utilise FAISS ou TF-IDF"""
+        if self.use_faiss:
+            return self._search_faiss(query, top_k, confidence_threshold)
+        else:
+            return self._search_tfidf(query, top_k, confidence_threshold)
+    
+    def _search_faiss(self, query, top_k, confidence_threshold):
+        """Recherche avec FAISS"""
+        if not hasattr(self, 'index') or self.index.ntotal == 0:
+            return []
+        
+        # Générer l'embedding de la requête
+        query_embedding = self.model.encode([query], convert_to_numpy=True)
+        
+        # Normaliser pour similarité cosinus
+        import faiss
+        faiss.normalize_L2(query_embedding)
+        
+        # Recherche
+        scores, indices = self.index.search(query_embedding, min(top_k, len(self.texts)))
+        
+        results = []
+        for score, idx in zip(scores[0], indices[0]):
+            if idx < len(self.texts) and score >= confidence_threshold:
+                qa_ref = self.qa_mapping[idx]
+                results.append({
+                    'qa_data': qa_ref['qa_data'],
+                    'score': float(score),
+                    'match_type': qa_ref['type'],
+                    'matched_text': self.texts[idx]
+                })
+        
+        return results
+    
+    def _search_tfidf(self, query, top_k, confidence_threshold):
+        """Recherche avec TF-IDF"""
+        if self.qa_vectors is None or self.qa_vectors.shape[0] == 0:
+            return []
+        
+        query_vec = self.vectorizer.transform([self.preprocess_text(query)])
+        similarities = cosine_similarity(query_vec, self.qa_vectors)
+        
+        top_indices = np.argsort(similarities[0])[-top_k:][::-1]
+        
+        results = []
+        for idx in top_indices:
+            score = similarities[0][idx]
+            if score >= confidence_threshold:
+                qa_ref = self.qa_references[idx]
+                
+                # Éviter les doublons
+                qa_id = qa_ref['qa_data'].get('id')
+                if not any(r['qa_data'].get('id') == qa_id for r in results):
+                    results.append({
+                        'qa_data': qa_ref['qa_data'],
+                        'score': float(score),
+                        'match_type': qa_ref['type']
+                    })
+        
+        return results
+
+# Test du système unifié
+if __name__ == "__main__":
+    print("🔍 TEST SYSTÈME UNIFIÉ")
+    print("=" * 50)
+    
+    # Test avec FAISS
+    retrieval_faiss = UnifiedRetrievalSystem("knowledge_base.json", use_faiss=True)
+    results_faiss = retrieval_faiss.search("Quels sont vos frais ?")
+    print(f"FAISS: {len(results_faiss)} résultats")
+    
+    # Test avec TF-IDF
+    retrieval_tfidf = UnifiedRetrievalSystem("knowledge_base.json", use_faiss=False)
+    results_tfidf = retrieval_tfidf.search("Quels sont vos frais ?")
+    print(f"TF-IDF: {len(results_tfidf)} résultats")
+    
+    print("=" * 50)
+    
