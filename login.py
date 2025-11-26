@@ -396,5 +396,3 @@ def logout():
         del st.session_state.pending_name
     
     st.rerun()
-
-    
