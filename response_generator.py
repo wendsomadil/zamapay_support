@@ -29,7 +29,7 @@ class ResponseGenerator:
         
         if not self.gemini_api_key:
             print("❌ ERREUR: Clé API Gemini non trouvée dans .env")
-            print("💡 Créez un fichier .env avec: GEMINI_API_KEY=AIzaSyD2mbjiSiPV2PSurmxAUB8MZb9YB02xXNE")
+            print("💡 Créez un fichier .env avec: GEMINI_API_KEY=AIzaSyAzUKy-4XE7svSulN1IksyFeHrdVQpQqLw")
             self.gemini_model = None
         else:
             self._setup_gemini()
@@ -189,7 +189,7 @@ Notre équipe est là pour vous aider ! 💙""",
 
     def _generate_with_gemini(self, query: str, user_name: str) -> Dict:
         """
-        Génère une réponse avec Gemini 2.0 Flash
+        Génère une réponse avec Gemini 2.5 Flash
         
         Args:
             query: Question de l'utilisateur
@@ -281,13 +281,13 @@ Notre équipe est là pour vous aider ! 💙""",
         
         # CORRECTION : Utiliser la bonne clé 'reponse' au lieu de 'answer'
         question = qa_data.get('question_principale', 'Information')
-        answer = qa_data.get('reponse', '') 
+        answer = qa_data.get('reponse', '')  # ⚠️ CORRECTION ICI
         
         if not answer:
             return self._generate_template_response(query, user_name)
         
         # Formater la réponse
-        formatted = answer 
+        formatted = answer  # ⚠️ CORRECTION : Utiliser directement la réponse
         
         return {
             'response': formatted,
@@ -522,4 +522,4 @@ if __name__ == "__main__":
         print(f"📊 Source: {response['source']}")
         print(f"💬 Réponse: {response['response'][:100]}...")
         print("-" * 60)
-   
+        
