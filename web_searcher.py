@@ -27,7 +27,7 @@ class WebSearcher:
                     if content and len(content) > 100:
                         results.append({
                             'url': url,
-                            'content': content[:500]  # Limiter la taille
+                            'content': content[:500]
                         })
                     
                     # Pause pour éviter le rate limiting
@@ -97,4 +97,3 @@ Ces informations proviennent de sources externes. Pour des détails précis conc
 **📌 Note importante :** Les informations externes peuvent ne pas refléter nos dernières fonctionnalités ou tarifs."""
 
         return response
-    
