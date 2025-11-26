@@ -24,7 +24,7 @@ class ResponseGenerator:
         self.kb_cache = {}
         self.cache_timeout = 3600
         
-        # ✅ RÉCUPÉRER LA CLÉ DEPUIS .env (SÉCURISÉ)
+        # ✅ RÉCUPÉRER LA CLÉ DEPUIS .env
         self.gemini_api_key = os.getenv('GEMINI_API_KEY')
         
         if not self.gemini_api_key:
@@ -498,7 +498,6 @@ Nos conseillers sont disponibles 7j/7 !""",
         self.kb_cache.clear()
         self.conversation_memory.clear()
         print("🧹 Tous les caches effacés")
-
 
 # Test du système
 if __name__ == "__main__":
