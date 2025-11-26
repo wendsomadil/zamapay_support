@@ -6,6 +6,8 @@ from retrieval_system import RetrievalSystem
 from response_generator import ResponseGenerator
 from login import show_login_page, check_authentication, logout
 from auth_system import auth_system
+from conversation_manager import conversation_manager
+from config import APP_NAME, VERSION
 
 # Configuration de la page
 st.set_page_config(
@@ -65,6 +67,38 @@ st.markdown("""
         text-align: center;
         margin-bottom: 2rem;
         font-family: 'Inter', sans-serif !important;
+    }
+    
+    /* Menu de navigation */
+    .nav-menu {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin: 1rem 0 2rem 0;
+        flex-wrap: wrap;
+    }
+    
+    .nav-button {
+        background: white !important;
+        border: 2px solid var(--border) !important;
+        color: var(--text-dark) !important;
+        padding: 0.75rem 1.5rem !important;
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .nav-button:hover {
+        border-color: var(--primary) !important;
+        color: var(--primary) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15) !important;
+    }
+    
+    .nav-button.active {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
+        color: white !important;
+        border-color: var(--primary) !important;
     }
     
     /* Carte utilisateur */
@@ -194,6 +228,28 @@ st.markdown("""
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
     }
     
+    /* Historique */
+    .history-item {
+        background: white;
+        padding: 1rem;
+        border-radius: 10px;
+        margin: 0.5rem 0;
+        border: 1px solid var(--border);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .history-item:hover {
+        border-color: var(--primary);
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+    }
+    
+    .history-preview {
+        color: var(--text-gray) !important;
+        font-size: 0.85rem !important;
+        margin-top: 0.25rem;
+    }
+    
     /* Footer */
     .footer {
         text-align: center;
@@ -219,6 +275,11 @@ st.markdown("""
         
         .main-header {
             font-size: 2rem !important;
+        }
+        
+        .nav-menu {
+            flex-direction: column;
+            align-items: center;
         }
     }
     
@@ -253,15 +314,54 @@ def initialize_systems():
         st.error(f"❌ Erreur: {str(e)}")
         return None, None
 
-def show_main_application():
-    """Application principale"""
-    retrieval, response_gen = initialize_systems()
+def show_navigation():
+    """Affiche le menu de navigation avec des boutons Streamlit"""
+    st.markdown('<div class="nav-menu">', unsafe_allow_html=True)
     
-    if retrieval is None or response_gen is None:
-        st.error("❌ Service indisponible")
-        if st.button("🔄 Recharger"):
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        if st.button("💬 Assistant", use_container_width=True, 
+                    type="primary" if st.session_state.current_page == "chat" else "secondary"):
+            st.session_state.current_page = "chat"
             st.rerun()
-        return
+    
+    with col2:
+        if st.button("📊 Historique", use_container_width=True,
+                    type="primary" if st.session_state.current_page == "history" else "secondary"):
+            st.session_state.current_page = "history"
+            st.rerun()
+    
+    with col3:
+        if st.button("👨‍💼 Parler à un Agent", use_container_width=True,
+                    type="primary" if st.session_state.current_page == "agent" else "secondary"):
+            st.session_state.current_page = "agent"
+            st.rerun()
+    
+    st.markdown('</div>', unsafe_allow_html=True)
+
+def load_user_messages():
+    """Charge les messages de l'utilisateur depuis la sauvegarde"""
+    if "messages_loaded" not in st.session_state:
+        saved_messages = conversation_manager.load_conversation(st.session_state.user_email)
+        if saved_messages:
+            st.session_state.messages = saved_messages
+        else:
+            st.session_state.messages = [{
+                "role": "assistant",
+                "content": f"Bonjour {st.session_state.user_name} ! 👋 Je suis votre assistant ZamaPay. Comment puis-je vous aider aujourd'hui ?",
+                "timestamp": datetime.now().isoformat()
+            }]
+        st.session_state.messages_loaded = True
+
+def save_user_messages():
+    """Sauvegarde les messages de l'utilisateur"""
+    conversation_manager.save_conversation(st.session_state.user_email, st.session_state.messages)
+
+def show_chat_page(response_gen):
+    """Page principale du chat"""
+    # Charger les messages au début
+    load_user_messages()
     
     # En-tête
     st.markdown('<div class="main-header">💳 ZamaPay</div>', unsafe_allow_html=True)
@@ -281,7 +381,7 @@ def show_main_application():
             </div>
             <div style="font-size: 0.85rem; opacity: 0.95;">
                 📧 {st.session_state.user_email}<br>
-                💬 {conv_count} conversations
+                💬 {conv_count} conversations • {len(st.session_state.messages)} messages
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -300,7 +400,7 @@ def show_main_application():
     
     questions = [
         "💰 Frais de transaction",
-        "⏱️ Délai de transfert",
+        "⏱️ Délai de transfert", 
         "🔒 Sécurité des données",
         "✅ Vérification compte",
         "🔑 Problème connexion",
@@ -315,13 +415,6 @@ def show_main_application():
                     process_message(q, response_gen)
     
     st.markdown("---")
-    
-    # Initialiser messages
-    if "messages" not in st.session_state:
-        st.session_state.messages = [{
-            "role": "assistant",
-            "content": f"Bonjour {st.session_state.user_name} ! 👋 Je suis votre assistant ZamaPay. Comment puis-je vous aider aujourd'hui ?"
-        }]
     
     # Affichage des messages
     for msg in st.session_state.messages:
@@ -348,8 +441,9 @@ def show_main_application():
             if "source" in msg:
                 sources = {
                     'knowledge_base': '📚 Base',
-                    'gemini': '🤖 IA',
-                    'template': '💼 Expert'
+                    'gemini': '🤖 IA', 
+                    'template': '💼 Expert',
+                    'fallback': '🔍 Système'
                 }
                 label = sources.get(msg["source"], "Système")
                 badges_html += f'<span class="badge badge-source">{label}</span>'
@@ -360,7 +454,6 @@ def show_main_application():
     # Zone de saisie
     st.markdown("---")
     
-    # Initialiser clé si nécessaire
     if "input_key" not in st.session_state:
         st.session_state.input_key = 0
     
@@ -376,18 +469,18 @@ def show_main_application():
         send = st.button("🚀 Envoyer", use_container_width=True, type="primary")
     
     with col2:
-        # Bouton Effacer
         if st.button("🧹 Effacer", use_container_width=True):
             st.session_state.input_key += 1
             st.rerun()
     
     with col3:
-        # Bouton pour réinitialiser
-        if st.button("🔄 Reset", use_container_width=True):
+        if st.button("🔄 Nouvelle Discussion", use_container_width=True):
             st.session_state.messages = [{
-                "role": "assistant",
-                "content": f"Nouvelle conversation, {st.session_state.user_name}. Comment puis-je vous aider ?"
+                "role": "assistant", 
+                "content": f"Nouvelle discussion, {st.session_state.user_name}. Comment puis-je vous aider ?",
+                "timestamp": datetime.now().isoformat()
             }]
+            save_user_messages()
             st.session_state.input_key += 1
             st.rerun()
     
@@ -396,12 +489,177 @@ def show_main_application():
             process_message(user_input, response_gen)
         else:
             st.warning("⚠️ Question déjà posée")
+
+def show_history_page():
+    """Page d'historique des conversations"""
+    st.markdown('<div class="main-header">📊 Historique des Conversations</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-header">Retrouvez toutes vos conversations précédentes</div>', unsafe_allow_html=True)
     
-    # Footer
+    # Charger l'historique
+    history = conversation_manager.get_user_conversations(st.session_state.user_email)
+    
+    if not history:
+        st.info("📝 Aucune conversation dans l'historique.")
+        if st.button("💬 Commencer une conversation", use_container_width=True):
+            st.session_state.current_page = "chat"
+            st.rerun()
+        return
+    
+    st.markdown(f"### 📋 Vos dernières conversations ({len(history)})")
+    
+    for i, conv in enumerate(history[-10:]):  # Les 10 dernières
+        with st.expander(f"🗓️ {conv['date']} - {conv['question'][:50]}...", expanded=False):
+            col1, col2 = st.columns([3, 1])
+            
+            with col1:
+                st.markdown(f"**❓ Question :** {conv['question']}")
+                st.markdown(f"**💡 Réponse :** {conv['response'][:200]}...")
+            
+            with col2:
+                if st.button("💬 Reprendre", key=f"resume_{i}"):
+                    st.session_state.current_page = "chat"
+                    st.session_state.messages = [
+                        {"role": "user", "content": conv['question'], "timestamp": conv['date']},
+                        {"role": "assistant", "content": conv['response'], "timestamp": conv['date']}
+                    ]
+                    save_user_messages()
+                    st.rerun()
+                    
+def show_agent_page():
+    """Page pour parler à un agent"""
+    st.markdown('<div class="main-header">👨‍💼 Parler à un Agent</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-header">Notre équipe est là pour vous aider personnellement</div>', unsafe_allow_html=True)
+    
     st.markdown("""
+    <div style="background: linear-gradient(135deg, #FFFBEB, #FEF3C7); padding: 2rem; border-radius: 12px; border: 1px solid #FCD34D; margin: 2rem 0;">
+        <div style="font-size: 1.1rem; font-weight: 700; color: #92400E; margin-bottom: 1rem;">
+            🎯 Contactez nos experts
+        </div>
+        <div style="color: #92400E; line-height: 1.6;">
+            Nos agents sont disponibles pour vous accompagner dans toutes vos démarches. 
+            Choisissez le mode de contact qui vous convient le mieux.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("### 📞 Contact Immédiat")
+        st.write("**Téléphone:** +226 25 40 92 76")
+        st.write("**Disponibilité:** Lun-Ven 8h-20h")
+        st.write("**WhatsApp:** +226 25 40 92 76")
+        
+        if st.button("📞 Appeler maintenant", use_container_width=True):
+            st.success("📞 Composition du numéro...")
+            st.info("🔗 Ouverture de votre application téléphonique...")
+    
+    with col2:
+        st.markdown("### 📧 Contact en Ligne")
+        st.write("**Email:** support@zamapay.com")
+        st.write("**Réponse:** Sous 2h")
+        st.write("**Urgence:** 24h/24 disponible")
+        
+        if st.button("📧 Envoyer un email", use_container_width=True):
+            st.success("📧 Ouverture de votre client email...")
+            st.info("✉️ Adresse pré-remplie: support@zamapay.com")
+    
+    st.markdown("---")
+    
+    # Formulaire de contact
+    st.markdown("### 📝 Formulaire de Contact")
+    
+    with st.form("contact_form"):
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            name = st.text_input("Nom complet", value=st.session_state.user_name)
+            email = st.text_input("Email", value=st.session_state.user_email)
+        
+        with col2:
+            phone = st.text_input("Téléphone", placeholder="+226 XX XX XX XX")
+            urgency = st.selectbox("Urgence", ["Normal", "Élevée", "Critique"])
+        
+        subject = st.selectbox(
+            "Sujet",
+            ["Problème technique", "Question sur les frais", "Vérification de compte", "Plainte", "Autre"]
+        )
+        
+        message = st.text_area("Description détaillée", height=120, 
+                            placeholder="Décrivez votre problème ou question en détail...")
+        
+        submitted = st.form_submit_button("🚀 Envoyer la demande", use_container_width=True)
+        
+        if submitted:
+            if message.strip():
+                st.success("✅ Votre demande a été envoyée ! Un agent vous contactera dans les plus brefs délais.")
+                st.balloons()
+                
+                # Afficher le récapitulatif
+                st.markdown("### 📋 Récapitulatif de votre demande")
+                st.write(f"**Nom:** {name}")
+                st.write(f"**Email:** {email}")
+                st.write(f"**Téléphone:** {phone}")
+                st.write(f"**Urgence:** {urgency}")
+                st.write(f"**Sujet:** {subject}")
+                st.write(f"**Message:** {message}")
+            else:
+                st.error("❌ Veuillez décrire votre problème.")
+
+def process_message(text, response_gen):
+    """Traite un message utilisateur et sauvegarde"""
+    try:
+        # Ajouter le message utilisateur
+        user_message = {
+            "role": "user", 
+            "content": text,
+            "timestamp": datetime.now().isoformat()
+        }
+        st.session_state.messages.append(user_message)
+        
+        with st.spinner("🔍 Analyse..."):
+            start = time.time()
+            response = response_gen.generate_response(text, st.session_state.user_name)
+            duration = time.time() - start
+        
+        # Mettre à jour le compteur de conversations
+        auth_system.update_user_conversation_count(st.session_state.user_email)
+        
+        # Ajouter la réponse de l'assistant
+        assistant_message = {
+            "role": "assistant",
+            "content": response.get('response', 'Erreur'),
+            "confidence": response.get('confidence', 0),
+            "source": response.get('source', 'system'),
+            "time": duration,
+            "timestamp": datetime.now().isoformat()
+        }
+        st.session_state.messages.append(assistant_message)
+        
+        # SAUVEGARDER LA CONVERSATION
+        save_user_messages()
+        
+        st.session_state.input_key += 1
+        st.rerun()
+        
+    except Exception as e:
+        st.error(f"❌ Erreur de traitement: {str(e)}")
+        st.session_state.messages.append({
+            "role": "assistant",
+            "content": f"Désolé {st.session_state.user_name}, une erreur est survenue. Contactez le support.",
+            "confidence": 0,
+            "source": "error",
+            "timestamp": datetime.now().isoformat()
+        })
+        save_user_messages()
+        st.rerun()
+
+def show_footer():
+    """Affiche le footer commun"""
+    st.markdown(f"""
     <div class="footer">
         <div style="font-weight: 700; font-size: 1.1rem; color: #1E40AF; margin-bottom: 0.5rem;">
-            💳 ZamaPay
+            💳 {APP_NAME}
         </div>
         <div style="font-style: italic; margin-bottom: 1rem; color: #475569;">
             "Goodbye Old Habits, Hello Future Payments!"
@@ -410,55 +668,49 @@ def show_main_application():
         📧 <a href="mailto:contact@zamapay.com" style="color: #2563EB; text-decoration: none;">contact@zamapay.com</a><br>
         🕒 Lun-Ven 8h-20h | Sam 9h-18h<br>
         <small style="color: #94A3B8; margin-top: 1rem; display: block;">
-            © 2025 ZamaPay • Version 2.0 • Propulsé par Gemini AI
+            © 2025 {APP_NAME} • Version {VERSION} • Propulsé par l'IA
         </small>
     </div>
     """, unsafe_allow_html=True)
 
-def process_message(text, response_gen):
-    """Traite un message utilisateur"""
-    try:
-        st.session_state.messages.append({"role": "user", "content": text})
-        
-        with st.spinner("🔍 Analyse..."):
-            start = time.time()
-            response = response_gen.generate_response(text, st.session_state.user_name)
-            duration = time.time() - start
-        
-        auth_system.update_user_conversation_count(st.session_state.user_email)
-        
-        st.session_state.messages.append({
-            "role": "assistant",
-            "content": response.get('response', 'Erreur'),
-            "confidence": response.get('confidence', 0),
-            "source": response.get('source', 'system'),
-            "time": duration
-        })
-        
-        st.session_state.input_key += 1
-        st.rerun()
-        
-    except Exception as e:
-        st.error("❌ Erreur de traitement")
-        st.session_state.messages.append({
-            "role": "assistant",
-            "content": f"Désolé {st.session_state.user_name}, une erreur est survenue. Contactez le support.",
-            "confidence": 0,
-            "source": "error"
-        })
-        st.rerun()
-
 def main():
     """Point d'entrée"""
+    # Initialiser l'état de session
     if "messages" not in st.session_state:
         st.session_state.messages = []
     if "input_key" not in st.session_state:
         st.session_state.input_key = 0
+    if "current_page" not in st.session_state:
+        st.session_state.current_page = "chat"
+    if "messages_loaded" not in st.session_state:
+        st.session_state.messages_loaded = False
     
     if not check_authentication():
         show_login_page()
     else:
-        show_main_application()
+        # Initialiser les systèmes
+        retrieval, response_gen = initialize_systems()
+        
+        if retrieval is None or response_gen is None:
+            st.error("❌ Service indisponible")
+            if st.button("🔄 Recharger"):
+                st.rerun()
+            return
+        
+        # Afficher la navigation
+        show_navigation()
+        
+        # Afficher la page appropriée
+        if st.session_state.current_page == 'history':
+            show_history_page()
+        elif st.session_state.current_page == 'agent':
+            show_agent_page()
+        else:  # Page chat par défaut
+            show_chat_page(response_gen)
+        
+        # Footer commun
+        show_footer()
 
 if __name__ == "__main__":
     main()
+    
