@@ -376,13 +376,13 @@ def show_main_application():
         send = st.button("🚀 Envoyer", use_container_width=True, type="primary")
     
     with col2:
-        # Bouton Effacer corrigé - NE réinitialise PAS les messages
+        # Bouton Effacer
         if st.button("🧹 Effacer", use_container_width=True):
             st.session_state.input_key += 1
             st.rerun()
     
     with col3:
-        # Nouveau bouton pour vraiment réinitialiser
+        # Bouton pour réinitialiser
         if st.button("🔄 Reset", use_container_width=True):
             st.session_state.messages = [{
                 "role": "assistant",
@@ -462,4 +462,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
