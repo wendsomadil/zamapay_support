@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configuration Gemini
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyD2mbjiSiPV2PSurmxAUB8MZb9YB02xXNE")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyAzUKy-4XE7svSulN1IksyFeHrdVQpQqLw")
 
 # Configuration de l'application
 APP_NAME = "ZamaPay"
