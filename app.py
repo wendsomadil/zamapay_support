@@ -343,21 +343,94 @@ def show_navigation():
 def load_user_messages():
     """Charge les messages de l'utilisateur depuis la sauvegarde"""
     if "messages_loaded" not in st.session_state:
-        saved_messages = conversation_manager.load_conversation(st.session_state.user_email)
-        if saved_messages:
-            st.session_state.messages = saved_messages
-        else:
+        try:
+            saved_messages = conversation_manager.load_conversation(st.session_state.user_email)
+            if saved_messages:
+                st.session_state.messages = saved_messages
+                print(f"✅ Messages chargés: {len(saved_messages)} messages")
+            else:
+                st.session_state.messages = [{
+                    "role": "assistant",
+                    "content": f"Bonjour {st.session_state.user_name} ! 👋 Je suis votre assistant ZamaPay. Comment puis-je vous aider aujourd'hui ?",
+                    "timestamp": datetime.now().isoformat()
+                }]
+                print("✅ Nouvelle conversation créée")
+            st.session_state.messages_loaded = True
+        except Exception as e:
+            print(f"❌ Erreur chargement messages: {e}")
             st.session_state.messages = [{
                 "role": "assistant",
-                "content": f"Bonjour {st.session_state.user_name} ! 👋 Je suis votre assistant ZamaPay. Comment puis-je vous aider aujourd'hui ?",
+                "content": f"Bonjour {st.session_state.user_name} ! 👋 Je suis votre assistant ZamaPay.",
                 "timestamp": datetime.now().isoformat()
             }]
-        st.session_state.messages_loaded = True
+            st.session_state.messages_loaded = True
 
 def save_user_messages():
     """Sauvegarde les messages de l'utilisateur"""
-    conversation_manager.save_conversation(st.session_state.user_email, st.session_state.messages)
+    try:
+        if st.session_state.get('user_email') and st.session_state.get('messages'):
+            success = conversation_manager.save_conversation(
+                st.session_state.user_email, 
+                st.session_state.messages
+            )
+            if success:
+                print("✅ Messages sauvegardés avec succès")
+            else:
+                print("❌ Échec sauvegarde messages")
+    except Exception as e:
+        print(f"❌ Erreur sauvegarde: {e}")
 
+def process_message(text, response_gen):
+    """Traite un message utilisateur et sauvegarde"""
+    try:
+        # Ajouter le message utilisateur
+        user_message = {
+            "role": "user", 
+            "content": text,
+            "timestamp": datetime.now().isoformat()
+        }
+        st.session_state.messages.append(user_message)
+        print(f"💬 Message utilisateur ajouté: {text[:50]}...")
+        
+        with st.spinner("🔍 Analyse..."):
+            start = time.time()
+            response = response_gen.generate_response(text, st.session_state.user_name)
+            duration = time.time() - start
+        
+        # Mettre à jour le compteur de conversations
+        auth_system.update_user_conversation_count(st.session_state.user_email)
+        
+        # Ajouter la réponse de l'assistant
+        assistant_message = {
+            "role": "assistant",
+            "content": response.get('response', 'Erreur'),
+            "confidence": response.get('confidence', 0),
+            "source": response.get('source', 'system'),
+            "time": duration,
+            "timestamp": datetime.now().isoformat()
+        }
+        st.session_state.messages.append(assistant_message)
+        print(f"🤖 Réponse assistant ajoutée: {response.get('source', 'unknown')}")
+        
+        # SAUVEGARDER LA CONVERSATION
+        save_user_messages()
+        
+        st.session_state.input_key += 1
+        st.rerun()
+        
+    except Exception as e:
+        error_msg = f"❌ Erreur traitement message: {str(e)}"
+        print(error_msg)
+        st.session_state.messages.append({
+            "role": "assistant",
+            "content": f"Désolé {st.session_state.user_name}, une erreur est survenue.",
+            "confidence": 0,
+            "source": "error",
+            "timestamp": datetime.now().isoformat()
+        })
+        save_user_messages()
+        st.rerun()
+        
 def show_chat_page(response_gen):
     """Page principale du chat"""
     # Charger les messages au début
