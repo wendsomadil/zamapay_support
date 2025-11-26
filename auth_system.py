@@ -17,8 +17,8 @@ class AuthenticationSystem:
         self.smtp_config = {
             "server": "smtp.gmail.com",
             "port": 587,
-            "email": "wendsomadil@gmail.com",  # Ton email
-            "password": "ljpxfjvuneyjpcie"    # Ton mot de passe d'application (sans espaces)
+            "email": "wendsomadil@gmail.com",
+            "password": "ljpxfjvuneyjpcie"
         }
     
     def load_users(self):
@@ -248,7 +248,7 @@ class AuthenticationSystem:
         
         user_data = pending[email]
         
-        # Vérifier l'expiration (10 minutes)
+        # Vérifier l'expiration
         if time.time() - user_data["created_at"] > 600:
             del pending[email]
             self.save_users()
@@ -268,11 +268,9 @@ class AuthenticationSystem:
             "password_hash": user_data["password_hash"],
             "created_at": time.time(),
             "last_login": time.time(),
-            "plan": "standard",  # Plan par défaut
-            "conversation_count": 0  # Compteur de conversations
+            "plan": "standard",
+            "conversation_count": 0  
         }
-        
-        # Supprimer de l'attente
         del pending[email]
         self.save_users()
         
@@ -299,7 +297,6 @@ class AuthenticationSystem:
         if email in self.users.get("users", {}):
             user_data = self.users["users"][email].copy()
             user_data["email"] = email
-            # Ne pas renvoyer le hash du mot de passe
             user_data.pop("password_hash", None)
             return user_data
         return None
