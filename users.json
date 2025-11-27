@@ -1,0 +1,29 @@
+{
+  "users": {
+    "wendsomadil@gmail.com": {
+      "name": "Fadel Kafando",
+      "password_hash": "da00f5cee715c7ed8350a925e91b1b3539b667673e2240f20988a1b032c33e5e:ff01bdf292f4fb6daeb5a0c5b3ddf609",
+      "created_at": 1764061976.6201196,
+      "last_login": 1764064305.4617484,
+      "plan": "standard",
+      "conversation_count": 3
+    },
+    "fadelkafando2@gmail.com": {
+      "name": "Adil KAFANDO",
+      "password_hash": "bdf333443c7876cb6f6abe9e6ae5f7d174420e8b2a7d597d4a8c9637de4cc616:578b29bf62a48a79b3d0983e622ce0ab",
+      "created_at": 1764064532.2906685,
+      "last_login": 1764252488.9769936,
+      "plan": "standard",
+      "conversation_count": 117
+    },
+    "fadel.kafando.etu@esmt.sn": {
+      "name": "Fadel Kafando",
+      "password_hash": "7f5f776cf8e164aca38bb0384478a81cacbb4bcd7a6caff8daef49c11a1859da:911ca1e81c9d1e0d4d50c8793ffb2bf2",
+      "created_at": 1764244042.182717,
+      "last_login": 1764244042.182717,
+      "plan": "standard",
+      "conversation_count": 0
+    }
+  },
+  "pending_verification": {}
+}
