@@ -167,7 +167,7 @@ def show_login_page():
                     st.info("""
                     **Pour résoudre :**
                     - Vérifie que la **validation 2 facteurs** est activée
-                    - Utilise un **mot de passe d'application**
+                    - Utilise un **mot de passe d'application** valide
                     - Les codes s'afficheront à l'écran en attendant
                     """)
         
@@ -180,7 +180,7 @@ def show_login_page():
                                     key="login_tab")
         with col2:
             register_clicked = st.button("📝 Inscription", use_container_width=True,
-                                       key="register_tab")
+                                    key="register_tab")
         st.markdown('</div>', unsafe_allow_html=True)
         
         # Gestion des onglets
@@ -363,7 +363,7 @@ def show_login_page():
     st.markdown("""
     <div style="text-align: center; color: #6B7280; font-size: 0.8rem; margin-top: 2rem;">
         <strong>ZamaPay Support</strong><br>
-        📞 01 23 45 67 89 • 📧 support@zamapay.com<br>
+        📞 +226 25 40 92 76 • 📧 support@zamapay.com<br>
         © 2025 ZamaPay - Tous droits réservés
     </div>
     """, unsafe_allow_html=True)
@@ -396,3 +396,4 @@ def logout():
         del st.session_state.pending_name
     
     st.rerun()
+    
