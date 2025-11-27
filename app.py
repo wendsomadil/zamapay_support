@@ -322,7 +322,7 @@ def show_navigation():
     """Affiche le menu de navigation avec des boutons Streamlit"""
     st.markdown('<div class="nav-menu">', unsafe_allow_html=True)
     
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
     
     with col1:
         if st.button("💬 Assistant", use_container_width=True, 
@@ -337,9 +337,15 @@ def show_navigation():
             st.rerun()
     
     with col3:
-        if st.button("👨‍💼 Parler à un Agent", use_container_width=True,
+        if st.button("👨‍💼 Agent", use_container_width=True,
                     type="primary" if st.session_state.current_page == "agent" else "secondary"):
             st.session_state.current_page = "agent"
+            st.rerun()
+    
+    with col4:
+        if st.button("ℹ️ À Propos", use_container_width=True,
+                    type="primary" if st.session_state.current_page == "about" else "secondary"):
+            st.session_state.current_page = "about"
             st.rerun()
     
     st.markdown('</div>', unsafe_allow_html=True)
@@ -683,53 +689,172 @@ def show_agent_page():
             else:
                 st.error("❌ Veuillez décrire votre problème.")
 
-def process_message(text, response_gen):
-    """Traite un message utilisateur et sauvegarde"""
-    try:
-        # Ajouter le message utilisateur
-        user_message = {
-            "role": "user", 
-            "content": text,
-            "timestamp": datetime.now().isoformat()
-        }
-        st.session_state.messages.append(user_message)
-        
-        with st.spinner("🔍 Analyse..."):
-            start = time.time()
-            response = response_gen.generate_response(text, st.session_state.user_name)
-            duration = time.time() - start
-        
-        # Mettre à jour le compteur de conversations
-        auth_system.update_user_conversation_count(st.session_state.user_email)
-        
-        # Ajouter la réponse de l'assistant
-        assistant_message = {
-            "role": "assistant",
-            "content": response.get('response', 'Erreur'),
-            "confidence": response.get('confidence', 0),
-            "source": response.get('source', 'system'),
-            "time": duration,
-            "timestamp": datetime.now().isoformat()
-        }
-        st.session_state.messages.append(assistant_message)
-        
-        # SAUVEGARDER LA CONVERSATION
-        save_user_messages()
-        
-        st.session_state.input_key += 1
-        st.rerun()
-        
-    except Exception as e:
-        st.error(f"❌ Erreur de traitement: {str(e)}")
-        st.session_state.messages.append({
-            "role": "assistant",
-            "content": f"Désolé {st.session_state.user_name}, une erreur est survenue. Contactez le support.",
-            "confidence": 0,
-            "source": "error",
-            "timestamp": datetime.now().isoformat()
-        })
-        save_user_messages()
-        st.rerun()
+def show_about_page():
+    """Page À Propos de ZamaPay"""
+    st.markdown('<div class="main-header">ℹ️ À Propos de ZamaPay</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-header">Moderniser les usages grâce à des services agiles et solidaires</div>', unsafe_allow_html=True)
+    
+    # Section principale
+    st.markdown("""
+    <div style="background: white; padding: 2rem; border-radius: 12px; border: 1px solid #E2E8F0; margin: 1rem 0;">
+        <div style="font-size: 1.1rem; font-weight: 600; color: #1E40AF; margin-bottom: 1rem;">
+            🚀 Notre Mission
+        </div>
+        <div style="color: #475569; line-height: 1.7;">
+            Moderniser les usages grâce à des services agiles et solidaires, financiers et non financiers, 
+            pensés pour les communautés et l'économie locale.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Description ZamaPay
+    st.markdown("""
+    <div style="background: linear-gradient(135deg, #EEF2FF, #E0E7FF); padding: 2rem; border-radius: 12px; margin: 1.5rem 0;">
+        <div style="font-size: 1.2rem; font-weight: 700; color: #1E40AF; margin-bottom: 1rem; text-align: center;">
+            💳 ZamaPay
+        </div>
+        <div style="color: #374151; line-height: 1.7; text-align: center; font-size: 1.05rem;">
+            Des solutions technologiques au service d'une offre inclusive, financière et non financière, 
+            au cœur des réalités africaines.
+        </div>
+        <div style="color: #6B7280; line-height: 1.6; text-align: center; margin-top: 1rem;">
+            Zamapay est une entreprise de technologie au service de la finance inclusive et des services essentiels
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Notre engagement
+    st.markdown("""
+    <div style="background: white; padding: 2rem; border-radius: 12px; border-left: 4px solid #10B981; margin: 1.5rem 0;">
+        <div style="font-size: 1.1rem; font-weight: 700; color: #047857; margin-bottom: 1rem;">
+            ✅ Notre Engagement
+        </div>
+        <div style="color: #475569; line-height: 1.7; font-style: italic;">
+            "Créer des solutions qui simplifient la vie, avec une finance inclusive, communautaire et digitale, 
+            ancrée dans les réalités africaines."
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Domaines d'expertise
+    st.markdown("### 🎯 Nos Domaines d'Expertise")
+    st.markdown("**3 axes pour transformer les pratiques financières en Afrique**")
+    st.markdown("*Chez Zamapay, nous croyons qu'une technologie n'a de valeur que si elle répond aux réalités locales.*")
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.markdown("""
+        <div style="background: white; padding: 1.5rem; border-radius: 12px; border: 1px solid #E2E8F0; height: 100%;">
+            <div style="font-size: 2rem; margin-bottom: 1rem;">🌍</div>
+            <div style="font-weight: 700; color: #1E40AF; margin-bottom: 0.5rem;">Inclusion Financière</div>
+            <div style="color: #475569; font-size: 0.9rem; line-height: 1.6;">
+                Permettre à chacun, en particulier les populations non ou sous-bancarisées, d'accéder à des services 
+                financiers simples, sécurisés et accessibles. Nous démocratisons la finance en la rendant disponible 
+                partout, pour tous.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("""
+        <div style="background: white; padding: 1.5rem; border-radius: 12px; border: 1px solid #E2E8F0; height: 100%;">
+            <div style="font-size: 2rem; margin-bottom: 1rem;">📱</div>
+            <div style="font-weight: 700; color: #1E40AF; margin-bottom: 0.5rem;">Digitalisation</div>
+            <div style="color: #475569; font-size: 0.9rem; line-height: 1.6;">
+                Accompagner les petits commerces, artisans et acteurs économiques locaux dans leur transition numérique. 
+                Nous proposons des outils adaptés qui facilitent les paiements et améliorent la gestion quotidienne.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        st.markdown("""
+        <div style="background: white; padding: 1.5rem; border-radius: 12px; border: 1px solid #E2E8F0; height: 100%;">
+            <div style="font-size: 2rem; margin-bottom: 1rem;">👥</div>
+            <div style="font-weight: 700; color: #1E40AF; margin-bottom: 0.5rem;">Communauté</div>
+            <div style="color: #475569; font-size: 0.9rem; line-height: 1.6;">
+                Concevoir des solutions qui s'appuient sur les dynamiques d'entraide, de solidarité et de gestion 
+                collective propres aux communautés africaines. Nous valorisons ces pratiques pour renforcer la 
+                résilience économique locale.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    # Slogan
+    st.markdown("""
+    <div style="text-align: center; padding: 2rem; background: linear-gradient(135deg, #1E40AF, #3730A3); 
+                color: white; border-radius: 12px; margin: 2rem 0;">
+        <div style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem;">
+            🚀 Goodbye Old Habits, Hello Future Payments!
+        </div>
+        <div style="font-size: 1rem; opacity: 0.9;">
+            Chez zamapay, nous innovons pour et avec nos utilisateurs, en confiance avec les communautés
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Nos valeurs
+    st.markdown("### 💎 Nos Valeurs")
+    
+    valeurs = [
+        {"emoji": "🎯", "titre": "Engagement utilisateurs", "desc": "Au cœur de nos priorités"},
+        {"emoji": "💡", "titre": "Innovation dans les usages", "desc": "Ancrée dans la réalité"},
+        {"emoji": "🤝", "titre": "Confiance communautaire", "desc": "Partenaire des communautés"},
+        {"emoji": "🌍", "titre": "Accessibilité pour tous", "desc": "Solutions inclusives"}
+    ]
+    
+    cols = st.columns(2)
+    for i, valeur in enumerate(valeurs):
+        with cols[i % 2]:
+            st.markdown(f"""
+            <div style="background: white; padding: 1.5rem; border-radius: 10px; border: 1px solid #E2E8F0; margin: 0.5rem 0;">
+                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">{valeur['emoji']}</div>
+                <div style="font-weight: 700; color: #1E40AF;">{valeur['titre']}</div>
+                <div style="color: #475569; font-size: 0.9rem;">{valeur['desc']}</div>
+            </div>
+            """, unsafe_allow_html=True)
+    
+    # Contact
+    st.markdown("---")
+    st.markdown("### 📞 Rejoignez le train de la finance inclusive")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("""
+        <div style="background: #F8FAFC; padding: 1.5rem; border-radius: 10px; border: 1px solid #E2E8F0;">
+            <div style="font-weight: 700; color: #1E40AF; margin-bottom: 1rem;">📧 Contact</div>
+            <div style="color: #475569;">
+                <div>📧 <strong>Email:</strong> contact@zamapay.com</div>
+                <div>📞 <strong>Téléphone:</strong> (226) 25 40 92 76</div>
+                <div>🏢 <strong>Adresse:</strong> Ouagadougou, Burkina Faso</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        # Formulaire de contact simplifié
+        with st.form("about_contact_form"):
+            st.markdown("**📝 Contactez-nous**")
+            
+            col_a, col_b = st.columns(2)
+            with col_a:
+                name = st.text_input("Nom & Prénom", placeholder="Votre nom complet")
+            with col_b:
+                email = st.text_input("Email", placeholder="votre@email.com")
+            
+            message = st.text_area("Message", placeholder="Votre message...", height=100)
+            
+            submitted = st.form_submit_button("🚀 Envoyer le message", use_container_width=True)
+            
+            if submitted:
+                if name and email and message:
+                    st.success("✅ Message envoyé ! Nous vous recontacterons rapidement.")
+                else:
+                    st.error("❌ Veuillez remplir tous les champs.")
 
 def show_footer():
     """Affiche le footer commun"""
@@ -782,6 +907,8 @@ def main():
             show_history_page()
         elif st.session_state.current_page == 'agent':
             show_agent_page()
+        elif st.session_state.current_page == 'about':
+            show_about_page()
         else:  # Page chat par défaut
             show_chat_page(response_gen)
         
