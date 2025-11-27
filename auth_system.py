@@ -13,12 +13,12 @@ class AuthenticationSystem:
         self.users_file = users_file
         self.users = self.load_users()
         
-        # Configuration email avec TES identifiants
+        # ✅ CONFIGURATION EMAIL ZAMAPAY OFFICIEL
         self.smtp_config = {
             "server": "smtp.gmail.com",
             "port": 587,
-            "email": "wendsomadil@gmail.com",
-            "password": "ljpxfjvuneyjpcie"
+            "email": "noreply.zamapay@gmail.com",  # Email officiel ZamaPay
+            "password": "xbibigugdjvfkkpr"         # Mot de passe d'application (sans espaces)
         }
     
     def load_users(self):
@@ -77,7 +77,7 @@ class AuthenticationSystem:
         try:
             # Configuration du message
             msg = MIMEMultipart()
-            msg['From'] = self.smtp_config['email']
+            msg['From'] = "ZamaPay Support <noreply.zamapay@gmail.com>"  # ✅ Email officiel
             msg['To'] = email
             msg['Subject'] = "🔐 Votre code de vérification ZamaPay"
             
@@ -161,8 +161,8 @@ class AuthenticationSystem:
                     </div>
                     <div class="footer">
                         <p><strong>ZamaPay Support</strong><br>
-                        📞 01 23 45 67 89 • 📧 support@zamapay.com</p>
-                        <p>© 2024 ZamaPay - Tous droits réservés</p>
+                        📞 +226 25 40 92 76 • 📧 support@zamapay.com</p>
+                        <p>© 2025 ZamaPay - Tous droits réservés</p>
                     </div>
                 </div>
             </body>
@@ -172,7 +172,7 @@ class AuthenticationSystem:
             msg.attach(MIMEText(body, 'html'))
             
             # Connexion au serveur SMTP
-            print(f"🔄 Tentative d'envoi d'email depuis {self.smtp_config['email']} vers {email}")
+            print(f"🔄 Tentative d'envoi d'email depuis noreply.zamapay@gmail.com vers {email}")
             server = smtplib.SMTP(self.smtp_config['server'], self.smtp_config['port'])
             server.ehlo()
             server.starttls()
@@ -248,7 +248,7 @@ class AuthenticationSystem:
         
         user_data = pending[email]
         
-        # Vérifier l'expiration
+        # Vérifier l'expiration (10 minutes)
         if time.time() - user_data["created_at"] > 600:
             del pending[email]
             self.save_users()
@@ -268,9 +268,11 @@ class AuthenticationSystem:
             "password_hash": user_data["password_hash"],
             "created_at": time.time(),
             "last_login": time.time(),
-            "plan": "standard",
-            "conversation_count": 0  
+            "plan": "standard",  # Plan par défaut
+            "conversation_count": 0  # Compteur de conversations
         }
+        
+        # Supprimer de l'attente
         del pending[email]
         self.save_users()
         
@@ -297,6 +299,7 @@ class AuthenticationSystem:
         if email in self.users.get("users", {}):
             user_data = self.users["users"][email].copy()
             user_data["email"] = email
+            # Ne pas renvoyer le hash du mot de passe
             user_data.pop("password_hash", None)
             return user_data
         return None
