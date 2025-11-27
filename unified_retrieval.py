@@ -1,35 +1,47 @@
 # unified_retrieval.py
 import os
 import json
-import faiss
 import pickle
-from sentence_transformers import SentenceTransformer
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import re
 
+# ✅ CORRECTION: Gestion robuste des imports FAISS
+try:
+    import faiss
+    FAISS_AVAILABLE = True
+    print("✅ FAISS disponible")
+except ImportError as e:
+    FAISS_AVAILABLE = False
+    print(f"⚠️ FAISS non disponible: {e}")
+
+try:
+    from sentence_transformers import SentenceTransformer
+    SENTENCE_TRANSFORMERS_AVAILABLE = True
+    print("✅ SentenceTransformer disponible")
+except ImportError as e:
+    SENTENCE_TRANSFORMERS_AVAILABLE = False
+    print(f"⚠️ SentenceTransformer non disponible: {e}")
+
 class UnifiedRetrievalSystem:
     def __init__(self, knowledge_base_path="knowledge_base.json", use_faiss=True):
         self.knowledge_base_path = knowledge_base_path
-        self.use_faiss = use_faiss
+        
+        # ✅ CORRECTION: Vérifier la disponibilité réelle
+        self.use_faiss = use_faiss and FAISS_AVAILABLE and SENTENCE_TRANSFORMERS_AVAILABLE
+        
+        if use_faiss and not self.use_faiss:
+            print("🔍 Fallback vers TF-IDF (FAISS ou SentenceTransformer non disponible)")
+        
         self.knowledge_base = self.load_knowledge_base(knowledge_base_path)
         
-        # ✅ CORRECTION: Toujours initialiser le modèle si FAISS est activé
-        if use_faiss:
-            try:
-                self.model = SentenceTransformer('all-MiniLM-L6-v2')
-                print("✅ Modèle SentenceTransformer chargé")
-            except Exception as e:
-                print(f"❌ Erreur chargement modèle: {e}")
-                self.use_faiss = False
-        
-        if use_faiss:
+        if self.use_faiss:
             # Essayer de charger l'index existant d'abord
             if not self.load_index():
                 # Sinon créer un nouvel index
                 self._initialize_faiss()
-                self.save_index()  # Sauvegarder après création
+                self.save_index()
         else:
             self._initialize_tfidf()
     
@@ -57,10 +69,12 @@ class UnifiedRetrievalSystem:
     def _initialize_faiss(self):
         """Initialise FAISS si disponible"""
         try:
-            # ✅ CORRECTION: Vérifier que le modèle est chargé
-            if not hasattr(self, 'model') or self.model is None:
-                self.model = SentenceTransformer('all-MiniLM-L6-v2')
-                print("✅ Modèle SentenceTransformer chargé dans _initialize_faiss")
+            if not FAISS_AVAILABLE or not SENTENCE_TRANSFORMERS_AVAILABLE:
+                raise ImportError("FAISS ou SentenceTransformer non disponible")
+            
+            # Charger le modèle d'embedding
+            self.model = SentenceTransformer('all-MiniLM-L6-v2')
+            print("✅ Modèle SentenceTransformer chargé")
             
             # Préparer les textes pour l'embedding
             self.texts = []
@@ -88,8 +102,8 @@ class UnifiedRetrievalSystem:
                 
                 # Créer l'index FAISS
                 dimension = embeddings.shape[1]
-                self.index = faiss.IndexFlatIP(dimension)  # Produit scalaire interne
-                faiss.normalize_L2(embeddings)  # Normaliser pour similarité cosinus
+                self.index = faiss.IndexFlatIP(dimension)
+                faiss.normalize_L2(embeddings)
                 self.index.add(embeddings)
                 
                 print(f"✅ FAISS initialisé avec {len(self.texts)} embeddings")
@@ -98,10 +112,6 @@ class UnifiedRetrievalSystem:
                 self.use_faiss = False
                 self._initialize_tfidf()
                 
-        except ImportError as e:
-            print(f"⚠️ FAISS non disponible: {e}")
-            self.use_faiss = False
-            self._initialize_tfidf()
         except Exception as e:
             print(f"❌ Erreur initialisation FAISS: {e}")
             self.use_faiss = False
@@ -159,14 +169,8 @@ class UnifiedRetrievalSystem:
     
     def _search_faiss(self, query, top_k, confidence_threshold):
         """Recherche avec FAISS"""
-        # ✅ CORRECTION: Vérifier que tous les composants sont disponibles
         if not hasattr(self, 'index') or self.index.ntotal == 0:
-            print("⚠️ Index FAISS non disponible, utilisation TF-IDF")
-            return self._search_tfidf(query, top_k, confidence_threshold)
-        
-        if not hasattr(self, 'model') or self.model is None:
-            print("⚠️ Modèle non disponible, utilisation TF-IDF")
-            return self._search_tfidf(query, top_k, confidence_threshold)
+            return []
         
         try:
             # Générer l'embedding de la requête
@@ -229,7 +233,7 @@ class UnifiedRetrievalSystem:
 
     def save_index(self, index_path="unified_faiss_index.bin", metadata_path="unified_faiss_metadata.pkl"):
         """Sauvegarde l'index FAISS et les métadonnées"""
-        if hasattr(self, 'index') and self.use_faiss:
+        if hasattr(self, 'index') and self.use_faiss and FAISS_AVAILABLE:
             try:
                 faiss.write_index(self.index, index_path)
                 
@@ -252,7 +256,7 @@ class UnifiedRetrievalSystem:
 
     def load_index(self, index_path="unified_faiss_index.bin", metadata_path="unified_faiss_metadata.pkl"):
         """Charge l'index FAISS et les métadonnées"""
-        if self.use_faiss and os.path.exists(index_path) and os.path.exists(metadata_path):
+        if self.use_faiss and FAISS_AVAILABLE and os.path.exists(index_path) and os.path.exists(metadata_path):
             try:
                 self.index = faiss.read_index(index_path)
                 
@@ -268,21 +272,4 @@ class UnifiedRetrievalSystem:
                 print(f"❌ Erreur chargement index: {e}")
                 return False
         return False
-
-# Test du système unifié
-if __name__ == "__main__":
-    print("🔍 TEST SYSTÈME UNIFIÉ")
-    print("=" * 50)
-    
-    # Test avec FAISS
-    retrieval_faiss = UnifiedRetrievalSystem("knowledge_base.json", use_faiss=True)
-    results_faiss = retrieval_faiss.search("Quels sont vos frais ?")
-    print(f"FAISS: {len(results_faiss)} résultats")
-    
-    # Test avec TF-IDF
-    retrieval_tfidf = UnifiedRetrievalSystem("knowledge_base.json", use_faiss=False)
-    results_tfidf = retrieval_tfidf.search("Quels sont vos frais ?")
-    print(f"TF-IDF: {len(results_tfidf)} résultats")
-    
-    print("=" * 50)
-    
+        
